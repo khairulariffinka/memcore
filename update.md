@@ -268,52 +268,16 @@ In OpenCode:
 
 ## Version
 
-Current: **0.6.0**
+Current: **0.1.0**
 
 ---
 
 ## Troubleshooting
 
-If update doesn't work, manually run:
+If update doesn't work, run the install script:
 
 ```bash
-# Update OUR agents only, preserve user's custom agents
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
-  fi
-done
-
-# Update OUR skills only, preserve user's custom skills
-for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
-  skill_dir=$(dirname "$f" | xargs basename)
-  mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
-  fi
-done
-
-# Compare and update opencode.json
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
-  fi
-else
-  cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
-fi
-
-# Copy global-memory if directory is empty
-[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+bash install.sh
 ```
 
 ---

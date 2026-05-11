@@ -22,50 +22,6 @@ That's it!
 ## Changelog
 
 ### v0.1.0 (Current)
-- ADD: First-time setup prompts for agent name
-- ADD: User can choose custom name (default: memcore)
-- ADD: Agent set as mode: primary automatically
-- ADD: `--dry-run` option for preview
-- ADD: Automatic backup before install
-- ADD: Conflict resolution for agents/skills
-- ADD: Merge option for opencode.json
-- ADD: Subagent routing table mapping task types to all 5 agents
-- ADD: Cross-agent handoffs to agents
-- ADD: Mandatory audit gate in git-manager.md before commit
-- ADD: Search/query and supersession logic to decision-log
-- ADD: FR/NFR templates, ERD/API contract templates to srs/sds skills
-- ADD: Parallel grouping and estimation criteria to planner skill
-- FIX: Expanded incomplete agent specifications
-- FIX: Overclaim terminology in memory agent (semantic search → keyword search, etc.)
-- FIX: planner.md edit:deny → edit:allow (content producer consistency)
-- FIX: Restricted unnecessary bash:allow → bash:deny (api-designer, brs-manager, docs-manager)
-- FIX: .gitignore scope (/memory/, /docs/ instead of memory/, docs/)
-- FIX: Memory skill paths, sed pattern, RAM population flow
-- ADD: Self-healing orchestration (8 error recovery scenarios)
-- ADD: Feedback loop with lessons learned system (lessons.md)
-- ADD: CI/CD validation script (scripts/validate.sh, 12 checks)
-- ADD: Formal changelog workflow for BRS/SRS/SDS spec chain
-- ADD: Parallel execution validation (dependency, file conflict, circular dep)
-- ADD: Token budgeting system with auto-triggers and sliding window
-- ADD: Guardrails (ask before modify, circuit breaker, rate limit, scope)
-- ADD: Git guardrails (secret scan, large file warning, message validation)
-- ADD: `--installed` flag for validate.sh
-- ADD: Open source files (CONTRIBUTING.md, SECURITY.md, CODE_OF_CONDUCT.md)
-- ADD: GitHub issue/PR templates
-- ADD: Agent generator script (scripts/generate-agent.sh)
-- ADD: Production test suite (tests/test-self-healing.sh, 18 scenarios)
-- ADD: GitHub Actions CI pipeline (.github/workflows/validate.yml)
-- ADD: SemVer policy (VERSIONING.md)
-
-### v0.4.4
-- ADD: `--dry-run` option for preview
-- ADD: Automatic backup before install
-- ADD: Changelog display
-- ADD: Conflict resolution for agents/skills
-- ADD: Merge option for opencode.json
-
-### v0.4.0
-- Initial release
 
 ---
 
@@ -316,44 +272,7 @@ If something goes wrong, manually run:
 
 ```bash
 mkdir -p ~/.config/opencode/agents ~/.config/opencode/skills ~/.config/opencode/global-memory
-
-# Update OUR agents only, preserve user's custom agents
-for f in core/agents/*.md; do
-  agent_name=$(basename "$f")
-  if [ -f ~/.config/opencode/agents/"$agent_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/agents/"$agent_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/agents/"$agent_name" && echo "Updated: $agent_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/agents/ && echo "Added: $agent_name"
-  fi
-done
-
-# Update OUR skills only, preserve user's custom skills
-for f in core/skills/*/*.md; do
-  skill_name=$(basename "$f")
-  skill_dir=$(dirname "$f" | xargs basename)
-  mkdir -p ~/.config/opencode/skills/"$skill_dir"
-  if [ -f ~/.config/opencode/skills/"$skill_dir"/"$skill_name" ]; then
-    if ! diff -q "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" > /dev/null 2>&1; then
-      cp "$f" ~/.config/opencode/skills/"$skill_dir"/"$skill_name" && echo "Updated: $skill_name"
-    fi
-  else
-    cp "$f" ~/.config/opencode/skills/"$skill_dir"/ && echo "Added: $skill_name"
-  fi
-done
-
-# Compare and update opencode.json
-if [ -f ~/.config/opencode/opencode.json ]; then
-  if ! diff -q core/opencode.json ~/.config/opencode/opencode.json > /dev/null 2>&1; then
-    cp core/opencode.json ~/.config/opencode/opencode.json && echo "Updated opencode.json"
-  fi
-else
-  cp core/opencode.json ~/.config/opencode/opencode.json && echo "Copied opencode.json"
-fi
-
-# Copy global-memory if directory is empty
-[ -z "$(ls -A ~/.config/opencode/global-memory 2>/dev/null)" ] && cp -r templates/global-memory/* ~/.config/opencode/global-memory/ || echo "Skipping global-memory (already exists)"
+bash install.sh
 ```
 
 ## Development
