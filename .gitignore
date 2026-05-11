@@ -1,0 +1,14 @@
+/docs/
+AGENTS.md
+DECISIONS.md
+planner.md
+!/core/agents/planner.md
+.memcore/
+.memcore-guard/
+.session-track/
+history/
+*.log
+*.tmp
+*.bak
+*.swp
+node_modules/
