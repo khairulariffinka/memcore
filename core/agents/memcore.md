@@ -35,9 +35,9 @@ permission:
 
 When session starts, after reading AGENTS.md, current-state.md, and planner.md:
 
-1. **Check reminders**: Run `@remind list` — show any due reminders
+1. **Check reminders**: Run `@reminders list` — show any due reminders
 2. **Check consolidation**: Run `@consolidate status` — quick memory health check
-3. **Load behavioural profile**: Run `@mula profile` — show observed patterns (if available)
+3. **Load behavioural profile**: Run `@observation profile` — show observed patterns (if available)
 
 This ensures you start each session with full context of what's pending, memory health, and user preferences.
 
@@ -65,7 +65,7 @@ Instead of manual updates, you MUST invoke the save-diary skill directly:
    ```
 2. Call `@diary save <focus>` to save structured session diary
 3. Call `@observation observe` to update behavioural profile
-4. Call `@remind list` to show any due/pending reminders
+4. Call `@reminders list` to show any due/pending reminders
 5. Check if consolidation needed: if diary > 500 lines, suggest `@consolidate compress light`
 6. If git changes exist, ask: "Commit changes? [y/N]" — if yes, call `@commit save <summary>`
 7. Call `@lru add` to update project tracking

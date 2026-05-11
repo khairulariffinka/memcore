@@ -1,5 +1,5 @@
 #!/bin/bash
-cd /home/ka/projek/klien/memcore
+cd "$(dirname "$0")/.."
 
 echo "=== Updating MemCore ==="
 echo ""

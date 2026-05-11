@@ -23,7 +23,7 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.6.0 (Current)
+### v0.1.0 (Current)
 - Library system — `@library save/search/list/get` (4 categories)
 - Save diary — `@diary save/list/view` with structured format
 - Observation — `@observation observe/profile/suggest` (behavioural learning)

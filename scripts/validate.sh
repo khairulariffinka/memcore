@@ -231,10 +231,10 @@ fi
 # ── 12. .gitignore scope (repo only) ──
 if [ "$1" != "--installed" ]; then
   echo "── .gitignore Scope ──"
-  if grep -q '^/memory/' "$ROOT/.gitignore" 2>/dev/null; then
-    check ".gitignore uses root-scoped /memory/" "pass"
+  if grep -q '^/docs/' "$ROOT/.gitignore" 2>/dev/null; then
+    check ".gitignore uses root-scoped /docs/" "pass"
   else
-    check ".gitignore memory/ not root-scoped" "fail"
+    check ".gitignore docs/ not root-scoped" "fail"
   fi
 fi
 

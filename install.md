@@ -21,7 +21,7 @@ That's it!
 
 ## Changelog
 
-### v0.5.0 (Current)
+### v0.1.0 (Current)
 - ADD: First-time setup prompts for agent name
 - ADD: User can choose custom name (default: memcore)
 - ADD: Agent set as mode: primary automatically

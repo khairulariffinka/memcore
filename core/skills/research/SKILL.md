@@ -5,8 +5,6 @@ description: Analyze codebase and gather context before planning
 
 # Research Skill
 
-
-
 ## Purpose
 
 Before planning or coding, research the codebase to:
