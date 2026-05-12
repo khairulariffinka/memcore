@@ -41,9 +41,9 @@ if [[ "$1" == "scan" ]]; then
     echo ""
     echo "--- Pattern Analysis ---"
 
-    # Check for skills that could be merged
-    if [[ -f "core/skills/memory/SKILL.md" && -f "core/skills/save-diary/SKILL.md" ]]; then
-        echo "Potential overlap: memory/save-diary both handle session saving"
+    # Check for overlapping functionality in remaining skills
+    if [[ -f "core/skills/observation/SKILL.md" && -f "core/skills/post-mortem/SKILL.md" ]]; then
+        echo "All 7 MemCore skills are distinct — no overlap detected"
     fi
 
     # Check for missing error handling

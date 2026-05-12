@@ -23,21 +23,17 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.1.0 (Current)
-- Library system — `@library save/search/list/get` (4 categories)
-- Save diary — `@diary save/list/view` with structured format
-- Observation — `@observation observe/profile/suggest` (behavioural learning)
-- Reminders — `@remind set/list/done/clear` (cross-session)
-- Memory consolidation — `@consolidate compress/patch/analyze/status`
-- Work plan — `@plan start/next/done/status` with auto-commit
-- Forge — `@forge scan/create/propose/list` (self-improvement)
-- Auto-commit — `@commit save/status/log` (structured git commits)
-- LRU projects — `@lru add/list/switch/remove/status` (10 active slots)
-- Echo recall — keyword search across sessions
-- Session briefing — auto-brief on start (tasks, reminders, health)
-- Post-mortem — failure logging with root cause
-- Rename CodeXen → MemCore across all files
-- Trimmed to 5 agents + 19 skills
+### v0.2.0 (Current)
+- **Refocus**: Stripped 12 overlapping skills, kept 7 unique memory skills
+- Observation (Mulahazah) — `@observation observe/profile/suggest`
+- Reminders — `@remind set/list/done/clear`
+- Library system — `@library save/search/list/get`
+- LRU projects — `@lru add/list/switch/remove/status`
+- Forge — `@forge scan/create/propose/list`
+- Work plan — `@plan start/next/done/status`
+- Post-mortem — `@pm log/list/lessons`
+- Reduced to 1 agent + 7 skills (memory intelligence layer)
+- Identity: complement to CodeXen, not competitor
 
 ---
 
@@ -248,8 +244,8 @@ echo ""
 
 | Action | Description |
 |--------|-----------|
-| Update agents (compare first) | Copy 5 agents from `core/agents/` |
-| Update skills (compare first) | Copy 19 skills from `core/skills/` |
+| Update agents (compare first) | Copy 1 agent from `core/agents/` |
+| Update skills (compare first) | Copy 7 skills from `core/skills/` |
 | Update opencode.json (if different) | Preserve user customizations |
 | Update memory templates (if empty) | Skip if exists |
 | **Preserves user's custom agents/skills** | Unchanged |
@@ -268,7 +264,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.1.0**
+Current: **0.2.0**
 
 ---
 

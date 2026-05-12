@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.2.0] - 2026-05-12
+
+### Changed
+- **Refocus**: Stripped 12 overlapping skills, kept 7 unique memory skills
+- **Identity**: Memory intelligence layer for OpenCode — complement to CodeXen
+- **Core**: Reduced from 5 agents + 19 skills → 1 agent + 7 skills
+- **memcore.md**: Updated routing table, session protocol, auto-save workflow
+- **README.md**: Reflect new scope and positioning
+
+### Removed
+- Agents: planner, research, memory, decision-log
+- Skills: planner, research, memory, decision-log, orchestration, init-project,
+  setup-profile, save-diary, echo-recall, auto-commit, memory-consolidation,
+  session-briefing
+
+### Kept
+- Skills: observation, reminders, library-system, lru-projects, forge,
+  work-plan, post-mortem
+
 ## [0.1.0] - 2026-05-11
 
 ### Added

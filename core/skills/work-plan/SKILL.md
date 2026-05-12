@@ -149,7 +149,7 @@ if [[ "$1" == "done" ]]; then
         git commit -m "$TASK_DESC: $COMMIT_MSG"
         echo "Committed: $TASK_DESC"
     elif git rev-parse --git-dir > /dev/null 2>&1; then
-        echo "Task done. Use '@commit save \"$TASK_DESC\"' to commit."
+        echo "Task done. Use 'git add -A && git commit -m \"$TASK_DESC\"' to commit."
     fi
 
     # Advance to next task
