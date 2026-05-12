@@ -1,6 +1,6 @@
-version: 0.1.0
+version: 0.2.0
 name: MemCore
-description: Memory-focused AI agent system for OpenCode — persistent memory, session diary, behavioural observation, cross-session reminders, knowledge library, and task orchestration
+description: Memory intelligence layer for OpenCode — behavioural observation, cross-session reminders, knowledge library, multi-project LRU tracking, self-improvement forge, work plan execution, and failure learning
 author: khairulariffinka
 license: MIT
 default_agent: memcore
@@ -8,58 +8,33 @@ topics:
   - ai-agent
   - opencode
   - memory-system
-  - subagent
-  - parallel-execution
-  - self-healing
-  - token-budgeting
-  - guardrails
-  - ci-cd
-  - customizable
-  - agentic-ai
-  - brs
-  - srs
-  - sds
+  - behavioural-learning
+  - knowledge-library
+  - cross-session-reminders
+  - multi-project
+  - self-improvement
+  - failure-learning
 
 core_agents:
   - memcore
-  - memory
-  - planner
-  - research
-  - decision-log
 
 core_skills:
-  - auto-commit
-  - decision-log
-  - echo-recall
-  - forge
-  - init-project
+  - observation
+  - reminders
   - library-system
   - lru-projects
-  - memory
-  - memory-consolidation
-  - observation
-  - orchestration
-  - planner
-  - post-mortem
-  - reminders
-  - research
-  - save-diary
-  - session-briefing
-  - setup-profile
+  - forge
   - work-plan
-
-template_skills:
-  - setup-profile
-  - init-project
-  - switch-config
+  - post-mortem
 
 features:
-  - lessons-learned
-  - token-budgeting
-  - feedback-loop
-  - parallel-validation
-  - ci-cd-validation
-  - guardrails
+  - behavioural-observation
+  - cross-session-reminders
+  - knowledge-organization
+  - multi-project-tracking
+  - self-improvement
+  - plan-execution
+  - failure-learning
 
 paths:
   opencode_config: ~/.config/opencode
