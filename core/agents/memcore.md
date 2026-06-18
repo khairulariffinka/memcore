@@ -25,17 +25,17 @@ permission:
 
 ## Operating Workflow (Brain Sync)
 
-- **Memory Phase**: Use `observation` skill to detect user patterns and load behavioural profile.
-- **Recall Phase**: Use `library-system` to search knowledge or `reminders` to check pending items.
-- **Tracking Phase**: Use `work-plan` to execute work plans or `lru-projects` to manage projects.
-- **Improvement Phase**: Use `forge` to scan for patterns or `post-mortem` to log failures.
+- **Memory Phase**: Use `memory` skill to detect user patterns, search knowledge, or consolidate session memory.
+- **Tracking Phase**: Use `work` skill to execute work plans or set goals.
+- **Improvement Phase**: Use `improve` skill to scan for patterns or log failures.
+- **Compression**: Use `compress` skill to save tokens.
 
 ## Session Start Protocol ⭐
 
 When session starts, after reading VERSION.yaml and docs/current-state.md:
 
 1. **Check reminders**: Run `reminders` skill with `list` command — show any due reminders
-2. **Load behavioural profile**: Run `observation` skill with `profile` command — show observed patterns (if available)
+2. **Load behavioural profile**: Run `memory` skill with `profile` command — show observed patterns (if available)
 
 This ensures you start each session with full context of what's pending and user preferences.
 
@@ -99,22 +99,18 @@ When context is low, inject this structured block:
    Session notes: [summary]
    EOF
    ```
-2. Call `observation` skill with `observe` command to update behavioural profile
+2. Call `memory` skill with `observe` command to update behavioural profile
 3. Call `reminders` skill with `list` command to show any due/pending reminders
-4. Call `lru-projects` skill with `add` command to update project tracking
-5. Call `dream` skill with `dream` command to consolidate session knowledge
-6. Append summary to `docs/session-diary.md`
-7. Update `~/.config/opencode/global-memory/session-index.md` with session summary
-8. Update `~/.config/opencode/global-memory/knowledge-graph.md` with cross-references
+4. Call `memory` skill with `dream` command to consolidate session knowledge
+5. Append summary to `docs/session-diary.md`
+6. Update `~/.config/opencode/global-memory/session-index.md` with session summary
 
 This will automatically:
    - Save session summary
    - Update behavioural profile
    - Show pending reminders
-   - Track project in LRU
    - Consolidate durable knowledge
    - Update session index for recall
-   - Map cross-skill knowledge connections
    - Clear global RAM
 
 ## Subagent Routing Table
@@ -123,17 +119,11 @@ Map user task type to the appropriate skill (use exact registered skill names):
 
 | Task Type | Skill Name | Example |
 |-----------|------------|---------|
-| Behaviour observation | `observation` | "observe my patterns" |
+| Memory (patterns + knowledge + consolidation) | `memory` | "observe my patterns", "save knowledge", "consolidate" |
 | Cross-session reminders | `reminders` | "set reminder for next session" |
-| Knowledge library | `library-system` | "save architecture decision" |
-| Multi-project LRU tracking | `lru-projects` | "list my projects" |
-| Self-improvement forge | `forge` | "scan for improvement patterns" |
-| Work plan execution | `work-plan` | "start plan refactor-auth" |
-| Failure logging | `post-mortem` | "log deployment failure" |
-| Memory consolidation | `dream` | "consolidate session knowledge" |
-| Goal-driven sessions | `goal` | "set goal all tests passing" |
-| Token compression | `compress` | "compress mode" |
-| File compression | `compress-file` | "compress file AGENTS.md" |
+| Work execution (plan + goals) | `work` | "start plan refactor-auth", "set goal" |
+| Self-improvement (failures + forge) | `improve` | "log failure", "scan codebase" |
+| Token compression | `compress` | "compress mode", "compress file AGENTS.md" |
 
 ## Parallel Execution Rules
 

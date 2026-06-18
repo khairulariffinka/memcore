@@ -1,6 +1,6 @@
-version: 1.3.0
+version: 2.0.0
 name: MemCore
-description: Memory intelligence layer for OpenCode — behavioural observation, cross-session reminders, knowledge library, multi-project LRU tracking, self-improvement forge, work plan execution, failure learning, memory consolidation, goal-driven sessions, and token compression
+description: Memory intelligence layer for OpenCode — memory, reminders, work, improve, compress. Ultra-simple, 5 skills.
 author: khairulariffinka
 license: MIT
 default_agent: memcore
@@ -8,14 +8,6 @@ topics:
   - ai-agent
   - opencode
   - memory-system
-  - behavioural-learning
-  - knowledge-library
-  - cross-session-reminders
-  - multi-project
-  - self-improvement
-  - failure-learning
-  - memory-consolidation
-  - goal-driven
   - token-compression
 
 core_agents:
@@ -23,35 +15,22 @@ core_agents:
   - memcore-plan
 
 core_skills:
-  - observation
+  - memory
   - reminders
-  - library-system
-  - lru-projects
-  - forge
-  - work-plan
-  - post-mortem
-  - dream
-  - goal
+  - work
+  - improve
   - compress
-  - compress-file
 
 features:
   - behavioural-observation
-  - cross-session-reminders
-  - knowledge-organization
-  - multi-project-tracking
-  - self-improvement
-  - plan-execution
-  - failure-learning
-  - read-only-planning
-  - session-indexing
-  - knowledge-graph
+  - knowledge-library
   - memory-consolidation
+  - cross-session-reminders
+  - plan-execution
   - goal-driven-sessions
-  - budgeted-reading
-  - context-reconstruction
+  - failure-learning
+  - self-improvement
   - token-compression
-  - memory-file-compression
 
 paths:
   opencode_config: ~/.config/opencode
