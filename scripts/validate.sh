@@ -53,12 +53,12 @@ echo ""
 # ── 1. Agent count ──
 echo "── Agent Count ──"
 agent_count=$(ls "$AGENTS_DIR"/*.md 2>/dev/null | wc -l)
-check "5 agent files (found: $agent_count)" "$([ "$agent_count" -eq 5 ] && echo "pass" || echo "fail")"
+check "2 agent files (found: $agent_count)" "$([ "$agent_count" -eq 2 ] && echo "pass" || echo "fail")"
 
 # ── 2. Skill count ──
 echo "── Skill Count ──"
 skill_count=$(ls "$SKILLS_DIR"/*/SKILL.md 2>/dev/null | wc -l)
-check "19 skill files (found: $skill_count)" "$([ "$skill_count" -eq 19 ] && echo "pass" || echo "fail")"
+check "9 skill files (found: $skill_count)" "$([ "$skill_count" -eq 9 ] && echo "pass" || echo "fail")"
 
 # ── 3. YAML frontmatter ──
 echo "── YAML Frontmatter ──"
@@ -103,35 +103,24 @@ check "All skills have valid YAML frontmatter" "pass"
 
 # ── 5. Permission consistency ──
 echo "── Permission Consistency ──"
-# Read-only agents (bash: deny + no edit)
-for agent in research; do
-  f="$AGENTS_DIR/$agent.md"
-  if [ -f "$f" ]; then
-    if grep -q 'bash: deny' "$f" && ! grep -q 'edit: allow' "$f" 2>/dev/null; then
-      : # ok
-    else
-      check "$agent: expected bash:deny + no edit" "fail"
-    fi
+# Full-access agent (edit:allow + bash:allow or bash:ask)
+f="$AGENTS_DIR/memcore.md"
+if [ -f "$f" ]; then
+  if grep -q 'edit: allow' "$f" && (grep -q 'bash: allow' "$f" || grep -q 'bash: ask' "$f"); then
+    : # ok
+  else
+    check "memcore: expected edit:allow + bash:allow/ask (full access)" "fail"
   fi
-done
-# Spec writers (edit:allow + bash:deny)
-for agent in decision-log planner; do
-  f="$AGENTS_DIR/$agent.md"
-  if [ -f "$f" ] && ! grep -q 'edit: allow' "$f"; then
-    check "$agent: expected edit:allow (spec writer)" "fail"
+fi
+# Plan agent (edit:deny + bash:deny)
+f="$AGENTS_DIR/memcore-plan.md"
+if [ -f "$f" ]; then
+  if grep -q 'edit: deny' "$f" && grep -q 'bash: deny' "$f"; then
+    : # ok
+  else
+    check "memcore-plan: expected edit:deny + bash:deny (read-only)" "fail"
   fi
-done
-# Full-access agents (edit:allow + bash:allow)
-for agent in memcore memory; do
-  f="$AGENTS_DIR/$agent.md"
-  if [ -f "$f" ]; then
-    if grep -q 'edit: allow' "$f" && grep -q 'bash: allow' "$f"; then
-      : # ok
-    else
-      check "$agent: expected edit:allow + bash:allow (full access)" "fail"
-    fi
-  fi
-done
+fi
 check "Permission sets are consistent" "pass"
 
 # ── 6. No swap/temp files ──
@@ -168,7 +157,7 @@ for f in $ref_files; do
     [ -z "$ref" ] && continue
     agent_name="${ref#@}"
     case "$agent_name" in
-      memcore|memory|planner|research|decision-log) ;;
+      memcore) ;;
       *) continue ;;
     esac
     if ! echo "$valid_agents" | grep -qw "$agent_name"; then
@@ -207,8 +196,8 @@ fi
 # ── 10. Install/Update agent count (repo only) ──
 if [ "$1" != "--installed" ]; then
   echo "── Install/Update File Counts ──"
-  install_match=$(grep -c '5 agents\|5 subagents' "$ROOT/install.md" 2>/dev/null || true)
-  update_match=$(grep -c '5 agents\|5 subagents' "$ROOT/update.md" 2>/dev/null || true)
+  install_match=$(grep -c '2 agents' "$ROOT/install.md" 2>/dev/null || true)
+  update_match=$(grep -c '2 agents' "$ROOT/update.md" 2>/dev/null || true)
   if [ "$install_match" -gt 0 ] && [ "$update_match" -gt 0 ]; then
     check "install/update.md reference correct agent count" "pass"
   else
@@ -219,12 +208,11 @@ fi
 # ── 11. Parallel group consistency (repo only) ──
 if [ "$1" != "--installed" ]; then
   echo "── Parallel Group Consistency ──"
-  parallel_planner=$(grep -c 'Parallel Group\|Parallel.*Group' "$ROOT/core/skills/planner/SKILL.md" 2>/dev/null || true)
   parallel_memcore=$(grep -c 'Parallel Group\|Parallel.*Group\|Parallel Execution' "$ROOT/core/agents/memcore.md" 2>/dev/null || true)
-  if [ "$parallel_planner" -ge 3 ] && [ "$parallel_memcore" -ge 1 ]; then
-    check "Parallel execution defined consistently across files" "pass"
+  if [ "$parallel_memcore" -ge 1 ]; then
+    check "Parallel execution defined in memcore agent" "pass"
   else
-    check "Parallel execution references inconsistent" "fail"
+    check "Parallel execution references missing in memcore" "fail"
   fi
 fi
 

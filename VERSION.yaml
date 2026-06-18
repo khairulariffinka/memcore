@@ -1,6 +1,6 @@
-version: 0.1.0
+version: 1.2.0
 name: MemCore
-description: Memory-focused AI agent system for OpenCode — persistent memory, session diary, behavioural observation, cross-session reminders, knowledge library, and task orchestration
+description: Memory intelligence layer for OpenCode — behavioural observation, cross-session reminders, knowledge library, multi-project LRU tracking, self-improvement forge, work plan execution, failure learning, memory consolidation, and goal-driven sessions
 author: khairulariffinka
 license: MIT
 default_agent: memcore
@@ -8,64 +8,52 @@ topics:
   - ai-agent
   - opencode
   - memory-system
-  - subagent
-  - parallel-execution
-  - self-healing
-  - token-budgeting
-  - guardrails
-  - ci-cd
-  - customizable
-  - agentic-ai
-  - brs
-  - srs
-  - sds
+  - behavioural-learning
+  - knowledge-library
+  - cross-session-reminders
+  - multi-project
+  - self-improvement
+  - failure-learning
+  - memory-consolidation
+  - goal-driven
 
 core_agents:
   - memcore
-  - memory
-  - planner
-  - research
-  - decision-log
+  - memcore-plan
 
 core_skills:
-  - auto-commit
-  - decision-log
-  - echo-recall
-  - forge
-  - init-project
+  - observation
+  - reminders
   - library-system
   - lru-projects
-  - memory
-  - memory-consolidation
-  - observation
-  - orchestration
-  - planner
-  - post-mortem
-  - reminders
-  - research
-  - save-diary
-  - session-briefing
-  - setup-profile
+  - forge
   - work-plan
-
-template_skills:
-  - setup-profile
-  - init-project
-  - switch-config
+  - post-mortem
+  - dream
+  - goal
 
 features:
-  - lessons-learned
-  - token-budgeting
-  - feedback-loop
-  - parallel-validation
-  - ci-cd-validation
-  - guardrails
+  - behavioural-observation
+  - cross-session-reminders
+  - knowledge-organization
+  - multi-project-tracking
+  - self-improvement
+  - plan-execution
+  - failure-learning
+  - read-only-planning
+  - session-indexing
+  - knowledge-graph
+  - memory-consolidation
+  - goal-driven-sessions
+  - budgeted-reading
+  - context-reconstruction
 
 paths:
   opencode_config: ~/.config/opencode
   opencode_agents: ~/.config/opencode/agents
   opencode_skills: ~/.config/opencode/skills
   opencode_scripts: ~/.config/opencode/scripts
+  opencode_global_memory: ~/.config/opencode/global-memory
 
 install:
   copy_core_agents: true

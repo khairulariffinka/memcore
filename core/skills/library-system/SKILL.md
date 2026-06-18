@@ -15,6 +15,7 @@ Knowledge repository untuk simpan dan recall informasi ikut kategori.
 | **search** | Cari entry guna keyword |
 | **list** | Senarai entry ikut kategori |
 | **get** | Baca entry spesifik |
+| **delete** | Padam entry dari library |
 
 ## Categories
 
@@ -65,6 +66,12 @@ Related entries or external links.
 ## Execute Logic
 
 ```bash
+# Parse --force flag
+FORCE="false"
+for arg in "$@"; do
+    [[ "$arg" == "--force" ]] && FORCE="true"
+done
+
 # @library save <category> <name> [content]
 # Saves an entry interactively or with provided content
 if [[ "$1" == "save" ]]; then
@@ -90,9 +97,11 @@ if [[ "$1" == "save" ]]; then
     FILE="$DIR/$NAME.md"
 
     if [[ -f "$FILE" ]]; then
-        echo "Entry '$NAME' exists in $CATEGORY. Overwrite? [y/N]"
-        read -r CONFIRM
-        [[ "$CONFIRM" != "y" ]] && echo "Cancelled." && exit 0
+        if [[ "$FORCE" != "true" ]]; then
+            echo "Entry '$NAME' exists in $CATEGORY. Overwrite? [y/N]"
+            read -r CONFIRM
+            [[ "$CONFIRM" != "y" ]] && echo "Cancelled." && exit 0
+        fi
     fi
 
     if [[ -z "$CONTENT" ]]; then
@@ -181,6 +190,36 @@ if [[ "$1" == "get" ]]; then
     else
         echo "Entry not found: $2/$3"
         echo "Use '@library list $2' to see available entries."
+    fi
+fi
+
+# @library delete <category> <name>
+if [[ "$1" == "delete" ]]; then
+    CATEGORY="$2"
+    NAME="$3"
+
+    if [[ -z "$CATEGORY" || -z "$NAME" ]]; then
+        echo "Usage: @library delete <category> <name>"
+        exit 1
+    fi
+
+    FILE="docs/library/$CATEGORY/$NAME.md"
+    if [[ -f "$FILE" ]]; then
+        if [[ "$FORCE" == "true" ]]; then
+            rm -f "$FILE"
+            echo "Deleted: $CATEGORY/$NAME"
+        else
+            echo "Delete '$CATEGORY/$NAME'? [y/N]"
+            read -r CONFIRM
+            if [[ "$CONFIRM" == "y" ]]; then
+                rm -f "$FILE"
+                echo "Deleted: $CATEGORY/$NAME"
+            else
+                echo "Cancelled."
+            fi
+        fi
+    else
+        echo "Entry not found: $CATEGORY/$NAME"
     fi
 fi
 ```

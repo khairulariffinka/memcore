@@ -25,7 +25,8 @@ First off, thanks for wanting to contribute! 🎉
 
 ### Agent Files (`core/agents/`)
 - Must have YAML frontmatter (`name`, `description`, `mode`, `permission`)
-- Must reference existing `@agent` names
+- `mode: primary` for full-access agents, `mode: plan` for read-only agents
+- Must reference existing skill names (use exact registered names)
 - Keep focused on one responsibility
 - Add guardrails if applicable
 

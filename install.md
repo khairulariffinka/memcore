@@ -21,7 +21,7 @@ That's it!
 
 ## Changelog
 
-### v0.1.0 (Current)
+### v1.2.0 (Current)
 
 ---
 
@@ -234,8 +234,8 @@ echo ""
 
 | Action | Location |
 |--------|---------|
-| Updates 5 agents (compare first) | `~/.config/opencode/agents/` |
-| Updates 19 skills (compare first) | `~/.config/opencode/skills/` |
+| Updates 2 agents (compare first) | `~/.config/opencode/agents/` |
+| Updates 9 skills (compare first) | `~/.config/opencode/skills/` |
 | Copies opencode.json (if different) | `~/.config/opencode/opencode.json` |
 | Creates memory templates (if empty) | `~/.config/opencode/global-memory/` |
 | Copies validation script | `~/.config/opencode/scripts/validate.sh` |
