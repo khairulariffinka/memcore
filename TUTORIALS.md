@@ -10,7 +10,7 @@
 >
 > This page is for **detailed guides** when you want to learn more.
 
-MemCore — memory intelligence layer with 9 focused skills.
+MemCore — memory intelligence layer with 11 focused skills.
 
 ---
 
@@ -31,6 +31,8 @@ MemCore — memory intelligence layer with 9 focused skills.
 10. [Post-Mortem](#post-mortem) — Failure learning
 11. [Dream](#dream) — Memory consolidation
 12. [Goal](#goal) — Goal-driven sessions
+13. [Compress](#compress) — Token compression
+14. [Compress File](#compress-file) — Memory file compression
 
 ---
 
@@ -73,7 +75,7 @@ When you start a session, the following happens:
 
 ### During Session
 
-Use any of the 9 skills as needed.
+Use any of the 11 skills as needed.
 
 ### End Session
 
@@ -103,6 +105,9 @@ library-system save architecture api-design "RESTful API design patterns"
 
 # Track this project
 lru-projects add
+
+# Enable token compression
+compress full
 ```
 
 ---
@@ -270,13 +275,13 @@ Self-improvement system — scan codebase, detect patterns, generate new skills.
 User: forge scan
 AI:   === Forge Scan ===
       Date: 2026-06-18
-      Existing skills: 9
+      Existing skills: 11
 
       --- Code Complexity ---
       Total lines: 1247
 
       --- Duplicate Patterns ---
-      Skills using $1 dispatch: 9/9
+      Skills using $1 dispatch: 11/11
       Missing validation: 2
       Missing --force: 3
 
@@ -452,6 +457,88 @@ AI:   Session complete: All tests passing
 
 ---
 
+## Compress
+
+**Skill:** `compress`
+
+Token compression — cut ~75% output tokens while keeping technical accuracy.
+
+| Command | Description |
+|---------|-------------|
+| `compress lite` | Light compression — no filler, keep full sentences |
+| `compress full` | Classic caveman — drop articles, fragments OK |
+| `compress ultra` | Maximum compression — abbreviate prose words |
+| `compress off` | Return to normal mode |
+
+### How It Works
+
+- Drops articles, filler, hedging
+- Uses fragments and short synonyms
+- Keeps code, URLs, error strings exact
+- Respects user's language (Malay → Malay terse)
+
+### Intensity Levels
+
+| Level | What Change | Example |
+|-------|-------------|---------|
+| **lite** | No filler. Professional but tight | "Your component re-renders because new object ref each render. Wrap in `useMemo`." |
+| **full** | Drop articles, fragments OK | "New object ref each render. Wrap in `useMemo`." |
+| **ultra** | Abbreviate prose words | "New ref → re-render. `useMemo`." |
+
+### Example
+
+```
+User: compress full
+AI:   ✓ Full compress active.
+
+User: How does React useEffect work?
+AI:   useEffect run side-effect after render. Dependency array control when run.
+      Empty array = run once on mount. Return function = cleanup on unmount.
+
+User: compress off
+AI:   ✓ Normal mode resumed.
+```
+
+---
+
+## Compress File
+
+**Skill:** `compress-file`
+
+Memory file compression — rewrite files into terse format to save input tokens.
+
+| Command | Description |
+|---------|-------------|
+| `compress-file <filepath>` | Compress a memory file |
+
+### What It Does
+
+1. Read target file
+2. Compress: drop filler, shorten prose, keep code/URLs/paths exact
+3. Save backup as `FILE.original.md`
+4. Overwrite with compressed version
+
+### Savings
+
+| File | Original | Compressed | Saved |
+|------|----------|------------|-------|
+| AGENTS.md | 2000 tokens | 1080 tokens | **46%** |
+| planner.md | 1500 tokens | 810 tokens | **46%** |
+| DECISIONS.md | 1200 tokens | 648 tokens | **46%** |
+
+### Example
+
+```
+User: compress-file AGENTS.md
+AI:   Compressing AGENTS.md...
+      Original: 2000 tokens
+      Compressed: 1080 tokens
+      Saved: 46%
+      Backup: AGENTS.original.md
+```
+
+---
+
 ## Quick Reference
 
 ### All Commands
@@ -498,6 +585,11 @@ AI:   Session complete: All tests passing
 | | `check` | Verify completion |
 | | `stop` | Mark complete |
 | | `clear` | Clear goal |
+| `compress` | `lite` | Light compression |
+| | `full` | Classic caveman |
+| | `ultra` | Maximum compression |
+| | `off` | Normal mode |
+| `compress-file` | `<filepath>` | Compress memory file |
 
 ---
 
@@ -551,12 +643,24 @@ goal check
 # ✅ PASS → goal stop
 ```
 
+### Save Tokens with Compress
+
+```bash
+# Enable compress for long sessions
+compress full
+
+# Compress memory files before session start
+compress-file AGENTS.md
+compress-file planner.md
+```
+
 ---
 
 ## Version History
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.3.0 | 2026-06-18 | Added compress skill, compress-file skill (caveman-inspired token compression) |
 | 1.2.0 | 2026-06-18 | Added dream skill, goal skill, budgeted-read, checkpoint template, context reconstruction |
 | 1.1.0 | 2026-06-18 | Added plan agent, permission system, session index, knowledge graph, new commands |
 | 1.0.0 | 2026-05-12 | First stable release. Memory intelligence layer — 7 skills, fully standalone. |

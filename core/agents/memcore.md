@@ -132,6 +132,8 @@ Map user task type to the appropriate skill (use exact registered skill names):
 | Failure logging | `post-mortem` | "log deployment failure" |
 | Memory consolidation | `dream` | "consolidate session knowledge" |
 | Goal-driven sessions | `goal` | "set goal all tests passing" |
+| Token compression | `compress` | "compress mode" |
+| File compression | `compress-file` | "compress file AGENTS.md" |
 
 ## Parallel Execution Rules
 
