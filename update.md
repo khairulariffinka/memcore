@@ -23,21 +23,39 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v0.1.0 (Current)
-- Library system — `@library save/search/list/get` (4 categories)
-- Save diary — `@diary save/list/view` with structured format
-- Observation — `@observation observe/profile/suggest` (behavioural learning)
-- Reminders — `@remind set/list/done/clear` (cross-session)
-- Memory consolidation — `@consolidate compress/patch/analyze/status`
-- Work plan — `@plan start/next/done/status` with auto-commit
-- Forge — `@forge scan/create/propose/list` (self-improvement)
-- Auto-commit — `@commit save/status/log` (structured git commits)
-- LRU projects — `@lru add/list/switch/remove/status` (10 active slots)
-- Echo recall — keyword search across sessions
-- Session briefing — auto-brief on start (tasks, reminders, health)
-- Post-mortem — failure logging with root cause
-- Rename CodeXen → MemCore across all files
-- Trimmed to 5 agents + 19 skills
+### v1.2.0 (Current)
+- Added dream skill — memory consolidation (scan sessions, extract durable knowledge, promote to MEMORY.md)
+- Added goal skill — goal-driven sessions with stop conditions and verification checklists
+- Added budgeted-read.sh — token-aware file reading with section-aware truncation
+- Added checkpoint.md — 11-section session state snapshot (MiMo-Code inspired)
+- Added context reconstruction protocol — structured approach to rebuild context from checkpoint
+
+### v1.1.0
+- Added memcore-plan agent (mode: plan) for read-only exploration
+- Added permission block in opencode.json (bash: ask)
+- Added session-index.md for cross-session recall
+- Added knowledge-graph.md for cross-skill references
+- Fixed skill alias references — use exact registered names
+- Fixed post-mortem — auto-increment ID, add edit command, add arguments for details
+- Fixed forge — real code pattern analysis, useful template generation
+- Fixed lru-projects — session count preserved on switch
+- Fixed input validation across all skills
+- Fixed non-interactive hangs — added --force flag support
+- Added CRUD commands: library delete, pm delete, remind edit
+- Standardized post-mortem description to English
+- Updated all documentation for v1.1.0
+
+### v1.0.0
+- **Refocus**: Stripped 12 overlapping skills, kept 7 unique memory skills
+- Observation (Mulahazah) — `observation observe/profile/suggest`
+- Reminders — `reminders set/list/done/clear`
+- Library system — `library-system save/search/list/get`
+- LRU projects — `lru-projects add/list/switch/remove/status`
+- Forge — `forge scan/create/propose/list`
+- Work plan — `work-plan start/next/done/status`
+- Post-mortem — `post-mortem log/list/lessons`
+- Reduced to 1 agent + 7 skills (memory intelligence layer)
+- Identity: fully standalone memory intelligence layer
 
 ---
 
@@ -248,8 +266,8 @@ echo ""
 
 | Action | Description |
 |--------|-----------|
-| Update agents (compare first) | Copy 5 agents from `core/agents/` |
-| Update skills (compare first) | Copy 19 skills from `core/skills/` |
+| Update agents (compare first) | Copy 2 agents from `core/agents/` |
+| Update skills (compare first) | Copy 9 skills from `core/skills/` |
 | Update opencode.json (if different) | Preserve user customizations |
 | Update memory templates (if empty) | Skip if exists |
 | **Preserves user's custom agents/skills** | Unchanged |
@@ -268,7 +286,7 @@ In OpenCode:
 
 ## Version
 
-Current: **0.1.0**
+Current: **1.2.0**
 
 ---
 

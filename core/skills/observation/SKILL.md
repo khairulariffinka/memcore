@@ -60,13 +60,17 @@ Sessions analysed: 12
 ```bash
 MULAHAZAH_FILE="$HOME/.config/opencode/global-memory/mulahazah.md"
 
+# Parse --force flag
+FORCE="false"
+for arg in "$@"; do
+    [[ "$arg" == "--force" ]] && FORCE="true"
+done
+
 # @mula observe
 # Analyze session diary & planner for user patterns
 if [[ "$1" == "observe" ]]; then
     DATE=$(date +%Y-%m-%d)
     LOCAL_DIARY="docs/session-diary.md"
-    PLANNER="planner.md"
-    DECISIONS="DECISIONS.md"
 
     mkdir -p "$(dirname "$MULAHAZAH_FILE")"
 
@@ -77,20 +81,14 @@ if [[ "$1" == "observe" ]]; then
     THIS_WEEK=$(date +%V)
     WEEK_SESSIONS=$(grep "^## Session:" "$LOCAL_DIARY" 2>/dev/null | grep -c "$(date +%Y)" || echo 0)
 
-    # Lang detection from diary
-    MALAY_KEYWORDS="bos selesai boleh kita tak ada ya dan atau ini itu"
-    ENGLISH_KEYWORDS="boss done okay we have yes no this that"
+    # Lang detection from diary (single grep call for efficiency)
+    MALAY_KEYWORDS="bos|selesai|boleh|kita|tak|ada|ya|dan|atau|ini|itu"
+    ENGLISH_KEYWORDS="boss|done|okay|we|have|yes|no|this|that"
     MALAY_COUNT=0
     ENGLISH_COUNT=0
     if [[ -f "$LOCAL_DIARY" ]]; then
-        for kw in $MALAY_KEYWORDS; do
-            C=$(grep -oi "$kw" "$LOCAL_DIARY" 2>/dev/null | wc -l)
-            MALAY_COUNT=$((MALAY_COUNT + C))
-        done
-        for kw in $ENGLISH_KEYWORDS; do
-            C=$(grep -oi "$kw" "$LOCAL_DIARY" 2>/dev/null | wc -l)
-            ENGLISH_COUNT=$((ENGLISH_COUNT + C))
-        done
+        MALAY_COUNT=$(grep -oiE "$MALAY_KEYWORDS" "$LOCAL_DIARY" 2>/dev/null | wc -l)
+        ENGLISH_COUNT=$(grep -oiE "$ENGLISH_KEYWORDS" "$LOCAL_DIARY" 2>/dev/null | wc -l)
     fi
     if [[ $MALAY_COUNT -gt $ENGLISH_COUNT ]]; then
         DETECTED_LANG="Malay"
@@ -100,9 +98,9 @@ if [[ "$1" == "observe" ]]; then
         DETECTED_LANG="Mixed"
     fi
 
-    # Task completion rate
-    TOTAL_TASKS=$(grep -cE "\[x\]|\[ \]" "$PLANNER" 2>/dev/null || echo 0)
-    DONE_TASKS=$(grep -c "\[x\]" "$PLANNER" 2>/dev/null || echo 0)
+    # Task completion rate (from session diary if available)
+    TOTAL_TASKS=$(grep -cE "\[x\]|\[ \]" "$LOCAL_DIARY" 2>/dev/null || echo 0)
+    DONE_TASKS=$(grep -c "\[x\]" "$LOCAL_DIARY" 2>/dev/null || echo 0)
     if [[ $TOTAL_TASKS -gt 0 ]]; then
         COMPLETION_RATE=$((DONE_TASKS * 100 / TOTAL_TASKS))
     else
@@ -111,6 +109,13 @@ if [[ "$1" == "observe" ]]; then
 
     # Agent preference from session diary agent mentions
     AGENT_LOG=$(grep -oE "@[a-z_-]+" "$LOCAL_DIARY" 2>/dev/null | sort | uniq -c | sort -rn | head -3 || echo "None")
+
+    # Error frequency from post-mortem
+    PM_FILE="docs/post-mortem.md"
+    ERROR_COUNT=0
+    if [[ -f "$PM_FILE" ]]; then
+        ERROR_COUNT=$(grep -c "^## PM-" "$PM_FILE" 2>/dev/null || echo 0)
+    fi
 
     # Peak hours
     PEAK_HOUR=$(grep -oE "\*\*Time\*\* \| [0-9]{2}:" "$LOCAL_DIARY" 2>/dev/null | sed 's/\*\*Time\*\* | //' | sed 's/:.*//' | sort | uniq -c | sort -rn | head -1 | awk '{print $2}')
@@ -132,6 +137,7 @@ if [[ "$1" == "observe" ]]; then
 | Task Completion Rate | ${COMPLETION_RATE}% | Medium |
 | Preferred Language | $DETECTED_LANG | High |
 | Peak Activity Hour | ${PEAK_HOUR}:00 | Medium |
+| Total Errors Logged | $ERROR_COUNT | Low |
 
 ## Agent Usage
 \`\`\`
@@ -181,13 +187,18 @@ fi
 # @mula reset
 # Reset behavioural data
 if [[ "$1" == "reset" ]]; then
-    echo "Reset Mulahazah behavioural data? [y/N]"
-    read -r CONFIRM
-    if [[ "$CONFIRM" == "y" ]]; then
+    if [[ "$FORCE" == "true" ]]; then
         rm -f "$MULAHAZAH_FILE"
         echo "Behavioural data reset."
     else
-        echo "Cancelled."
+        echo "Reset Mulahazah behavioural data? [y/N]"
+        read -r CONFIRM
+        if [[ "$CONFIRM" == "y" ]]; then
+            rm -f "$MULAHAZAH_FILE"
+            echo "Behavioural data reset."
+        else
+            echo "Cancelled."
+        fi
     fi
 fi
 ```

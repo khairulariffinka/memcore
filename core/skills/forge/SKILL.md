@@ -22,6 +22,12 @@ AI-driven self-improvement. Scan codebase for repetitive patterns, generate new 
 FORGE_DIR="docs/forge"
 PROPOSALS_FILE="$FORGE_DIR/proposals.md"
 
+# Parse --force flag
+FORCE="false"
+for arg in "$@"; do
+    [[ "$arg" == "--force" ]] && FORCE="true"
+done
+
 # @forge scan
 # Analyse codebase for repetitive patterns and improvement opportunities
 if [[ "$1" == "scan" ]]; then
@@ -32,42 +38,154 @@ if [[ "$1" == "scan" ]]; then
     echo "Date: $DATE"
     echo ""
 
-    # Count existing skills and their size
+    # ── 1. Skill Inventory ──
     SKILL_COUNT=$(ls core/skills/*/SKILL.md 2>/dev/null | wc -l)
     echo "Existing skills: $SKILL_COUNT"
 
-    # Look for patterns in skill implementations
-    # Check if there are skills with similar function names
+    # ── 2. Code Complexity Analysis ──
     echo ""
-    echo "--- Pattern Analysis ---"
-
-    # Check for skills that could be merged
-    if [[ -f "core/skills/memory/SKILL.md" && -f "core/skills/save-diary/SKILL.md" ]]; then
-        echo "Potential overlap: memory/save-diary both handle session saving"
-    fi
-
-    # Check for missing error handling
+    echo "--- Code Complexity ---"
+    TOTAL_LINES=0
     for SKILL in core/skills/*/SKILL.md; do
         [[ -f "$SKILL" ]] || continue
-        NAME=$(grep "^name:" "$SKILL" 2>/dev/null | sed 's/name: //')
-        if ! grep -q "exit 1\|exit 0" "$SKILL" 2>/dev/null; then
-            echo "⚠️  '$NAME' missing error handling"
+        LINES=$(wc -l < "$SKILL")
+        TOTAL_LINES=$((TOTAL_LINES + LINES))
+        NAME=$(basename "$(dirname "$SKILL")")
+        if [[ $LINES -gt 200 ]]; then
+            echo "  ⚠️  $NAME: $LINES lines (consider splitting)"
+        fi
+    done
+    echo "Total lines across all skills: $TOTAL_LINES"
+
+    # ── 3. Duplicate Pattern Detection ──
+    echo ""
+    echo "--- Duplicate Patterns ---"
+
+    # Find common bash patterns repeated across skills
+    DISPATCH_PATTERN='if \[\[ "\$1" =='
+    DISPATCH_COUNT=$(grep -rl "$DISPATCH_PATTERN" core/skills/*/SKILL.md 2>/dev/null | wc -l)
+    echo "Skills using \$1 dispatch: $DISPATCH_COUNT/$SKILL_COUNT"
+
+    # Find skills missing input validation
+    MISSING_VALIDATION=0
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        if ! grep -q 'if \[\[ -z "\$' "$SKILL" 2>/dev/null; then
+            echo "  ⚠️  $NAME: missing input validation"
+            MISSING_VALIDATION=$((MISSING_VALIDATION + 1))
         fi
     done
 
-    # Count total function blocks
-    TOTAL_FUNCTIONS=$(grep -c "^# @" core/skills/*/SKILL.md 2>/dev/null || echo 0)
-    echo "Total skill functions: $TOTAL_FUNCTIONS"
+    # Find skills missing --force flag
+    MISSING_FORCE=0
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        if ! grep -q 'FORCE' "$SKILL" 2>/dev/null; then
+            echo "  ⚠️  $NAME: missing --force flag support"
+            MISSING_FORCE=$((MISSING_FORCE + 1))
+        fi
+    done
 
-    # Check for repetitive bash patterns
-    VALIDATION_COUNT=$(grep -c 'if \[\[\s*"\$1"' core/skills/*/SKILL.md 2>/dev/null || echo 0)
-    echo "Command dispatchers: $VALIDATION_COUNT"
+    # Find skills with read -r (potential hang)
+    HANG_RISK=0
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        READ_COUNT=$(grep -c 'read -r' "$SKILL" 2>/dev/null || echo 0)
+        FORCE_COUNT=$(grep -c 'FORCE' "$SKILL" 2>/dev/null || echo 0)
+        if [[ $READ_COUNT -gt 0 && $FORCE_COUNT -eq 0 ]]; then
+            echo "  🔴 $NAME: read -r without --force guard (hang risk)"
+            HANG_RISK=$((HANG_RISK + 1))
+        fi
+    done
 
+    # ── 4. Error Handling Analysis ──
     echo ""
-    echo "--- Suggestions ---"
-    echo "1. Review overlapping skills for potential merge"
-    echo "2. Add error handling to skills missing it"
-    echo "3. Standardise command patterns across skills"
+    echo "--- Error Handling ---"
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        HAS_EXIT=$(grep -c 'exit [01]' "$SKILL" 2>/dev/null || echo 0)
+        HAS_USAGE=$(grep -ci 'usage:' "$SKILL" 2>/dev/null || echo 0)
+        if [[ $HAS_EXIT -eq 0 ]]; then
+            echo "  ⚠️  $NAME: no exit codes defined"
+        fi
+        if [[ $HAS_USAGE -eq 0 ]]; then
+            echo "  ⚠️  $NAME: no usage messages"
+        fi
+    done
+
+    # ── 5. Naming Convention Check ──
+    echo ""
+    echo "--- Naming Conventions ---"
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        # Check frontmatter
+        if ! head -5 "$SKILL" | grep -q '^name:'; then
+            echo "  ⚠️  $NAME: missing name in frontmatter"
+        fi
+        if ! head -5 "$SKILL" | grep -q '^description:'; then
+            echo "  ⚠️  $NAME: missing description in frontmatter"
+        fi
+        # Check function docs
+        FUNC_COUNT=$(grep -c "^# @" "$SKILL" 2>/dev/null || echo 0)
+        DOC_COUNT=$(grep -c '^\*\*' "$SKILL" 2>/dev/null || echo 0)
+        if [[ $FUNC_COUNT -gt 0 && $DOC_COUNT -eq 0 ]]; then
+            echo "  ⚠️  $NAME: has $FUNC_COUNT functions but no documentation table"
+        fi
+    done
+
+    # ── 6. Dependency Analysis ──
+    echo ""
+    echo "--- Dependencies ---"
+    # Check which skills depend on external files
+    for SKILL in core/skills/*/SKILL.md; do
+        [[ -f "$SKILL" ]] || continue
+        NAME=$(basename "$(dirname "$SKILL")")
+        REFS=$(grep -oE 'docs/[a-z-]+\.md' "$SKILL" 2>/dev/null | sort -u)
+        if [[ -n "$REFS" ]]; then
+            echo "  $NAME depends on: $REFS"
+        fi
+    done
+
+    # ── 7. Summary & Proposals ──
+    echo ""
+    echo "--- Summary ---"
+    echo "Issues found: $((MISSING_VALIDATION + MISSING_FORCE + HANG_RISK))"
+
+    # Generate proposals
+    mkdir -p "$FORGE_DIR"
+    cat > "$PROPOSALS_FILE" << EOF
+# Forge Proposals
+
+Generated: $DATE
+
+## High Priority
+EOF
+
+    if [[ $HANG_RISK -gt 0 ]]; then
+        echo "- Fix $HANG_RISK skill(s) with read -r without --force guard" >> "$PROPOSALS_FILE"
+    fi
+    if [[ $MISSING_VALIDATION -gt 0 ]]; then
+        echo "- Add input validation to $MISSING_VALIDATION skill(s)" >> "$PROPOSALS_FILE"
+    fi
+    if [[ $MISSING_FORCE -gt 0 ]]; then
+        echo "- Add --force flag to $MISSING_FORCE skill(s)" >> "$PROPOSALS_FILE"
+    fi
+
+    cat >> "$PROPOSALS_FILE" << EOF
+
+## Low Priority
+- Standardise error handling across all skills
+- Add documentation tables to undocumented skills
+- Review skills with high line count for potential splitting
+
+---
+_Scan complete. Review proposals with: @forge propose_
+EOF
 
     # Save scan results
     cat > "$FORGE_DIR/last-scan.md" << EOF
@@ -75,16 +193,21 @@ if [[ "$1" == "scan" ]]; then
 
 Date: $DATE
 Skills: $SKILL_COUNT
-Functions: $TOTAL_FUNCTIONS
+Total Lines: $TOTAL_LINES
 
 ## Findings
-- $( [[ $SKILL_COUNT -gt 15 ]] && echo "High skill count — consider consolidation" || echo "Skill count is manageable" )
-- $( [[ $TOTAL_FUNCTIONS -lt $SKILL_COUNT ]] && echo "Some skills may have no functions" || echo "Good function distribution" )
+- Skills with \$1 dispatch: $DISPATCH_COUNT
+- Missing validation: $MISSING_VALIDATION
+- Missing --force: $MISSING_FORCE
+- Hang risk (read without --force): $HANG_RISK
 
----
+## Proposals Generated
+See $PROPOSALS_FILE
 EOF
+
     echo ""
     echo "Scan saved to $FORGE_DIR/last-scan.md"
+    echo "Proposals saved to $PROPOSALS_FILE"
 fi
 
 # @forge create <skill-name> <description>
@@ -105,9 +228,11 @@ if [[ "$1" == "create" ]]; then
     TARGET_FILE="$TARGET_DIR/SKILL.md"
 
     if [[ -f "$TARGET_FILE" ]]; then
-        echo "Skill '$SKILL_NAME' already exists. Overwrite? [y/N]"
-        read -r CONFIRM
-        [[ "$CONFIRM" != "y" ]] && echo "Cancelled." && exit 0
+        if [[ "$FORCE" != "true" ]]; then
+            echo "Skill '$SKILL_NAME' already exists. Overwrite? [y/N]"
+            read -r CONFIRM
+            [[ "$CONFIRM" != "y" ]] && echo "Cancelled." && exit 0
+        fi
     fi
 
     mkdir -p "$TARGET_DIR"
@@ -120,17 +245,24 @@ description: $DESCRIPTION
 
 # ${SKILL_NAME^} Skill
 
-$(echo "$DESCRIPTION" | sed 's/^/\U/')
+$(echo "$DESCRIPTION" | awk '{print toupper(substr($0,1,1)) substr($0,2)}')
 
 ## Primary Functions
 
 | Function | Description |
 |----------|-------------|
 | **help** | Show available commands |
+| **run** | Execute main logic |
 
 ## Execute Logic
 
 \`\`\`bash
+# Parse --force flag
+FORCE="false"
+for arg in "\$@"; do
+    [[ "\$arg" == "--force" ]] && FORCE="true"
+done
+
 # @${SKILL_NAME} help
 if [[ "\$1" == "help" || -z "\$1" ]]; then
     echo "${SKILL_NAME^} Skill"
@@ -138,14 +270,67 @@ if [[ "\$1" == "help" || -z "\$1" ]]; then
     echo ""
     echo "Commands:"
     echo "  help    Show this message"
+    echo "  run     Execute main logic"
+    echo ""
+    echo "Options:"
+    echo "  --force Skip confirmation prompts"
+    exit 0
 fi
+
+# @${SKILL_NAME} run [args]
+if [[ "\$1" == "run" ]]; then
+    shift
+    ARGS="\$*"
+
+    # Input validation
+    if [[ -z "\$ARGS" ]]; then
+        echo "Error: Missing required arguments."
+        echo "Usage: @${SKILL_NAME} run <input>"
+        exit 1
+    fi
+
+    # Validate input (no pipe characters)
+    if echo "\$ARGS" | grep -q '|'; then
+        echo "Error: Input cannot contain '|' character."
+        exit 1
+    fi
+
+    # Confirmation for destructive operations
+    if [[ "\$FORCE" != "true" ]]; then
+        echo "Execute with input: \$ARGS? [y/N]"
+        read -r CONFIRM
+        [[ "\$CONFIRM" != "y" ]] && echo "Cancelled." && exit 0
+    fi
+
+    # Add your logic here
+    echo "Running ${SKILL_NAME^} with: \$ARGS"
+    echo "✅ Done"
+    exit 0
+fi
+
+echo "Unknown command: \$1"
+echo "Use '@${SKILL_NAME} help' for usage."
+exit 1
 \`\`\`
+
+## Notes
+
+- Add your logic in the \`run\` command block
+- Use \`--force\` flag for non-interactive execution
+- Always validate inputs before processing
+- Return exit 0 on success, exit 1 on failure
 EOF
 
     echo "✓ Skill forged: $TARGET_FILE"
     echo ""
+    echo "Template includes:"
+    echo "  - --force flag support"
+    echo "  - Input validation"
+    echo "  - Error handling"
+    echo "  - Usage messages"
+    echo ""
     echo "Next steps:"
-    echo "  1. Edit $TARGET_FILE to add functionality"
+    echo "  1. Edit $TARGET_FILE — add logic in the 'run' block"
     echo "  2. Register in VERSION.yaml under core_skills"
     echo "  3. Add routing in core/agents/memcore.md"
 

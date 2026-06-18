@@ -10,578 +10,558 @@
 >
 > This page is for **detailed guides** when you want to learn more.
 
-Comprehensive guide to using all 5 core agents and 19 skills in MemCore.
+MemCore — memory intelligence layer with 9 focused skills.
 
 ---
 
 ## Table of Contents
 
 ### Getting Started
-1. [Primary Agent](#primary-agent) — How to use the main agent
+1. [Installation](#installation) — Setup MemCore in OpenCode
 2. [Session Lifecycle](#session-lifecycle) — Start, work, save
+3. [Basic Usage](#basic-usage) — First commands
 
-### Skills & Agents
-3. [Planner](#planner) — Task breakdown & estimation
-4. [Memory](#memory) — Context, diary, recall
-5. [Research](#research) — Codebase analysis
-6. [Decision Log](#decision-log) — Design decisions
-7. [Save Diary](#save-diary) — Structured session diary
-8. [Library System](#library-system) — Knowledge library
-9. [Observation](#observation) — Behavioural learning
-10. [Reminders](#reminders) — Cross-session reminders
-11. [Memory Consolidation](#memory-consolidation) — Compression & audit
-12. [Work Plan](#work-plan) — Plan execution tracking
-13. [Auto-Commit](#auto-commit) — Git commits
-14. [LRU Projects](#lru-projects) — Multi-project tracking
+### Skills
+4. [Observation](#observation) — Behavioural learning (Mulahazah)
+5. [Reminders](#reminders) — Cross-session reminders
+6. [Library System](#library-system) — Knowledge library
+7. [LRU Projects](#lru-projects) — Multi-project tracking
+8. [Forge](#forge) — Self-improvement skill generator
+9. [Work Plan](#work-plan) — Plan execution tracking
+10. [Post-Mortem](#post-mortem) — Failure learning
+11. [Dream](#dream) — Memory consolidation
+12. [Goal](#goal) — Goal-driven sessions
 
 ---
 
-## Primary Agent
+## Installation
 
-The **Primary Agent** (`memcore`) is your main orchestrator. It routes tasks to the right agent or skill, manages session lifecycle, and coordinates workflows.
+### 1. Clone
 
-### How to Activate
-
-Press `TAB` until you see `memcore`, then give your task:
-
-```
-@memory, save session
-@planner, break down auth feature
-@research, analyze codebase
+```bash
+git clone https://github.com/khairulariffinka/memcore.git
+cd memcore
 ```
 
-### Session Start
+### 2. Load in OpenCode
 
-When a session starts, MemCore automatically:
+In OpenCode, load the install file:
 
-1. Reads project context (VERSION.yaml)
-2. Loads global memory (user profile, past sessions)
-3. Checks pending reminders
-4. Shows memory health status
-5. Loads behavioural profile
+```
+"load install.md"
+```
+
+### 3. Activate
+
+Press `TAB` until you see `memcore`, then start using it:
+
+```
+observation observe
+```
 
 ---
 
 ## Session Lifecycle
 
-### Start
-```
-opencode
-→ Auto-brief: shows active tasks, pending reminders, memory health
-```
+### Start Session
 
-### Work
-```
-@planner, create plan for feature X
-@research, find existing patterns
-@decision-log, log architecture choice
-@plan start feature-x      → Begin execution
-@plan done "implemented"   → Mark task complete
-@commit save "feat: x"     → Commit changes
-@library save architecture decision-log "Why we chose X"
-```
+When you start a session, the following happens:
 
-### End
-When you say `bye`, `done`, `selesai`, or `keluar`:
+1. MemCore loads its configuration
+2. You can check pending reminders: `reminders list`
+3. You can load behavioural profile: `observation profile`
 
-1. `@diary save <focus>` — Save structured diary
-2. `@observation observe` — Update behavioural profile
-3. `@remind list` — Check pending reminders
-4. `@commit save <summary>` — Commit if changes exist
-5. `@lru add` — Update project tracking
+### During Session
+
+Use any of the 9 skills as needed.
+
+### End Session
+
+When you say "bye", "done", "selesai", or "keluar":
+
+1. Behavioural profile updates via `observation observe`
+2. Pending reminders shown via `reminders list`
+3. Project tracking updates via `lru-projects add`
+4. Session knowledge consolidated via `dream`
+5. Session summary saved
 
 ---
 
-## Planner
+## Basic Usage
 
-### What It Does
+### First Session
 
-The `planner` creates hierarchical task breakdowns with risk assessment, dependency tracking, and effort estimation.
+```bash
+# Observe your patterns
+observation observe
 
-**Features:**
-| Feature | Description |
-|---------|-------------|
-| **Hierarchical Planning** | Milestones → Epics → Stories → Tasks |
-| **Risk Assessment** | Risk level, impact, mitigation |
-| **Dependency Tracking** | Task dependencies and blockers |
-| **Effort Estimation** | Time estimates based on complexity |
-| **Parallel Grouping** | Identify tasks that can run simultaneously |
+# Set a reminder
+reminders set tomorrow "Review PR"
 
-### Usage
+# Save knowledge
+library-system save architecture api-design "RESTful API design patterns"
 
-```
-@planner, create a plan for building an e-commerce checkout
-```
-
-```
-@planner, break down the user authentication feature into tasks
-```
-
-### Example Output
-
-```
-# Project Plan: User Authentication
-
-## Overview
-- Goal: Implement complete user auth system
-- Total Tasks: 8
-- Parallel Groups: 2
-
-## Milestones
-### Milestone 1: Foundation
-- [ ] Task AUTH-001: Create User model
-- [ ] Task AUTH-002: Create database migration
-
-### Milestone 2: Authentication
-- [ ] Task AUTH-003: Create registration API
-- [ ] Task AUTH-004: Create login API
-
-## Parallel Groups
-### Group 1 (Can start immediately)
-- AUTH-001, AUTH-002
-
-### Group 2 (Depends on Group 1)
-- AUTH-003, AUTH-004
-```
-
----
-
-## Memory
-
-### What It Does
-
-The `memory` agent maintains context across sessions — keyword search, decision tracking, file relationship maps, and cross-project context.
-
-**Features:**
-| Feature | Description |
-|---------|-------------|
-| **Keyword Search** | Search by tags, keywords, file names |
-| **Decision Tracking** | Log why decisions were made |
-| **Cross-Project Context** | Reuse patterns from other projects |
-| **Pattern Documentation** | Document recurring implementation patterns |
-| **Session Briefing** | Auto-brief on session start |
-
-### Usage
-
-```
-@memory, what decisions were made about authentication?
-```
-
-```
-@memory, show me similar implementations of payment integration
-```
-
-### Example Output
-
-```
-[MEMORY LOADED]
-
-Project: MyApp
-Tech Stack: Laravel 11 + React + MySQL
-
-Active Decisions:
-- DEC-001: Using JWT authentication (2024-01-15)
-- DEC-003: Repository pattern (2024-01-10)
-
-Relevant Patterns:
-- API Resource Pattern (used 8 times)
-- Repository Pattern (active)
-
-Similar Past Work:
-- Session 2024-01-15: User authentication
-```
-
-### Memory Consolidation
-
-Compress old sessions to save tokens:
-
-```
-@consolidate compress light     # 30-50% savings
-@consolidate compress medium    # 50-70% savings
-@consolidate compress full      # 70-80% savings
-```
-
-### Echo Recall
-
-Search past sessions by keyword:
-
-```
-@memory, search JWT
-@memory, search PostgreSQL
-@memory, recent
-```
-
----
-
-## Research
-
-### What It Does
-
-The `research` agent analyzes the codebase to understand existing patterns, tech stack, and context.
-
-**Research Areas:**
-| Area | Details |
-|------|---------|
-| **Tech Stack** | Framework, language, database, API style |
-| **Project Structure** | Directory layout, key files |
-| **Existing Patterns** | Code organisation, conventions |
-| **Similar Implementations** | Find reusable components |
-
-### Usage
-
-```
-@research, analyze the current project structure
-```
-
-```
-@research, find how authentication is implemented
-```
-
-### Example Output
-
-```
-# Research: New Feature Implementation
-
-## Tech Stack Detected
-- Framework: Express.js
-- Language: TypeScript
-- Database: PostgreSQL
-- API: REST
-
-## Relevant Files
-| File | Purpose |
-|------|---------|
-| src/models/User.ts | User model |
-| src/routes/auth.ts | Auth routes |
-
-## Existing Patterns
-- Validation: express-validator
-- Auth: JWT with refresh tokens
-
-## Recommendations
-- Use existing JWT pattern from auth module
-```
-
----
-
-## Decision Log
-
-### What It Does
-
-The `decision-log` agent tracks design decisions with full context and rationale.
-
-**Purpose:**
-- Capture design decisions during development
-- Document context and constraints
-- Record options considered and trade-offs
-- Link related decisions
-
-### Usage
-
-```
-@decision-log, log the decision to use PostgreSQL over MongoDB
-```
-
-```
-@decision-log, record the JWT vs Session authentication decision
-```
-
-### Example Format
-
-```
-## Decision: DEC-2026-001
-
-**Date:** 2026-03-11
-**Context:** Need authentication for API-first app
-
-### Options Considered
-| Option | Pros | Cons |
-|--------|------|------|
-| JWT | Scalable, stateless | Harder to revoke |
-| Sessions | Easy to revoke | Not scalable |
-
-### Decision
-**Chosen:** JWT with refresh tokens
-
-### Rationale
-- API-first architecture
-- Mobile app integration planned
-```
-
----
-
-## Save Diary
-
-### What It Does
-
-Saves structured session diaries with tasks, decisions, files, and git context.
-
-### Usage
-
-```
-@diary save "implemented auth"     → Auto-save with focus
-@diary list                         → Show recent sessions
-@diary view 1                       → View session #1
-```
-
-### Auto-Detected on Save
-
-- **Tasks completed/pending** — from planner.md
-- **Decisions made** — from DECISIONS.md
-- **Files changed** — from git diff
-- **Session notes** — from global RAM
-
----
-
-## Library System
-
-### What It Does
-
-Knowledge repository organised by categories — save and recall information.
-
-### Categories
-
-| Category | Description |
-|----------|-------------|
-| **architecture** | System design, patterns, tech decisions |
-| **workflow** | Processes, pipelines, automations |
-| **database** | Schema, queries, migrations |
-| **integration** | API contracts, third-party services |
-
-### Usage
-
-```
-@library save architecture api-design "We chose REST over GraphQL because..."
-@library search JWT
-@library list architecture
-@library get architecture api-design
+# Track this project
+lru-projects add
 ```
 
 ---
 
 ## Observation
 
-### What It Does
+**Skill:** `observation`
 
-Behavioural learning — tracks your patterns and adjusts to your working style.
+Tracks your behavioural patterns across sessions:
 
-### Observed Dimensions
+| Command | Description |
+|---------|-------------|
+| `observation observe` | Analyse session diary & planner for user patterns |
+| `observation profile` | Show current observed user profile |
+| `observation suggest` | Suggest adjustments based on observed patterns |
+| `observation reset` | Reset behavioural data |
 
-| Dimension | What It Tracks |
+### What It Tracks
+
+| Dimension | What It Detects |
 |-----------|----------------|
-| **Session Length** | Average session duration |
-| **Task Completion** | Completion rate per session |
-| **Language Mix** | Malay vs English usage ratio |
-| **Peak Hours** | Time of day with most activity |
-| **Agent Usage** | Most-used subagents |
+| Language | Malay vs English usage ratio |
+| Peak Hours | Time of day with most activity |
+| Completion Rate | How often tasks are completed |
+| Agent Preference | Most-used subagents |
+| Session Length | Average session duration |
+| Error Frequency | Common failure patterns |
 
-### Usage
+### Example
 
 ```
-@observation observe     → Analyse session diary for patterns
-@observation profile     → Show current behavioural profile
-@observation suggest     → Show suggestions based on patterns
+User: observation observe
+AI:   Observing 12 sessions...
+      ✓ Language: Malay (preferred)
+      ✓ Peak hours: 10:00
+      ✓ Completion rate: 75%
+      ✓ Profile updated.
 ```
 
 ---
 
 ## Reminders
 
-### What It Does
+**Skill:** `reminders`
 
-Cross-session reminders with due dates that persist until completed.
+Cross-session reminders with due dates and persistence.
 
-### Usage
+| Command | Description |
+|---------|-------------|
+| `reminders set <due> <message>` | Set a new reminder |
+| `reminders list` | Show all pending reminders |
+| `reminders done <id>` | Mark reminder complete |
+| `reminders edit <id> <due> <message>` | Edit an existing reminder |
+| `reminders clear` | Clear all completed reminders |
 
-```
-@remind set next-session "Check deployment config"
-@remind set tomorrow "Review PR #42"
-@remind set 2026-06-01 "Renew SSL certificate"
-@remind list
-@remind done REM-001
-@remind clear
-```
-
----
-
-## Memory Consolidation
-
-### What It Does
-
-Advanced memory management — compress session history, patch planner tasks, and run full memory audit.
-
-### Usage
-
-```
-@consolidate compress light      → Summarise sessions older than 10
-@consolidate compress medium     → Keep only last 5 sessions
-@consolidate compress full       → Keep only last 2 + decisions
-@consolidate patch               → Sync planner consistency
-@consolidate analyze             → Full memory audit
-@consolidate status              → Quick memory health check
-```
-
----
-
-## Work Plan
-
-### What It Does
-
-Plan-to-execution tracking with per-task auto-commit.
-
-### Usage
-
-```
-@plan start feature-auth     → Load/create plan, start first task
-@plan next                   → Show next pending task
-@plan done "implemented"     → Mark current task done, auto-commit
-@plan status                 → Show plan progress
-```
+Due options: `next-session`, `tomorrow`, `YYYY-MM-DD`
 
 ### Example
 
 ```
-User: @plan start feature-auth
+User: reminders set next-session "Check deployment status"
+AI:   Reminder set: REM-001 — "Check deployment status" (due: next-session)
 
-MemCore:
-=== Plan: feature-auth ===
-Current task: Create User model with migration
+--- Next session ---
+User: reminders list
+AI:   ⚠️ Due reminders:
+      REM-001 — "Check deployment status" (due: next-session)
 
- 1. Create User model with migration
- 2. Implement registration API
- 3. Implement login API
- 4. Add JWT middleware
- 5. Write tests
-
-User: (implements the model)
-User: @plan done "created User model"
-
-MemCore:
-✓ Task done: Create User model with migration
-✓ Committed: "feat: create User model with migration"
-Next up: Implement registration API
+User: reminders edit REM-001 tomorrow "Updated deployment check"
+AI:   Reminder REM-001 updated: "Updated deployment check" (due: tomorrow)
 ```
 
 ---
 
-## Auto-Commit
+## Library System
 
-### What It Does
+**Skill:** `library-system`
 
-Structured git commits with session context — auto-stage, auto-generate message.
+Organised knowledge library with categorised entries.
 
-### Usage
+| Command | Description |
+|---------|-------------|
+| `library-system save <category> <name> [content]` | Save a knowledge entry |
+| `library-system search <keyword>` | Search entries by keyword |
+| `library-system list [category]` | List entries (by category or all) |
+| `library-system get <category> <name>` | Read a specific entry |
+| `library-system delete <category> <name>` | Delete an entry |
+
+### Categories
+
+| Category | Use For |
+|----------|---------|
+| **architecture** | System design, patterns, tech decisions |
+| **workflow** | Processes, pipelines, automations |
+| **database** | Schema, queries, migrations |
+| **integration** | API contracts, third-party services |
+
+### Example
 
 ```
-@commit save "implemented auth"      → Stage all + commit with message
-@commit save                          → Commit with date-based message
-@commit status                        → Show git status with diary context
-@commit log 5                         → Show last 5 commits
+User: library-system save architecture repository-pattern "Repository pattern with Laravel:
+      - Interface + Implementation
+      - Dependency injection via constructor
+      - Unit test with mocks"
+
+AI:   Entry saved: LIB-2026-001 → docs/library/architecture/repository-pattern.md
+
+User: library-system search repository
+AI:   LIB-2026-001 — Repository Pattern (architecture)
+
+User: library-system delete architecture repository-pattern
+AI:   Deleted: architecture/repository-pattern
 ```
 
 ---
 
 ## LRU Projects
 
-### What It Does
+**Skill:** `lru-projects`
 
-Multi-project tracking with LRU eviction — 10 active slots, auto-archival.
+Multi-project management with LRU eviction — 10 active slots, auto-archival.
 
-### Usage
+| Command | Description |
+|---------|-------------|
+| `lru-projects add [name]` | Register current project |
+| `lru-projects list` | List all tracked projects (active + archived) |
+| `lru-projects switch <name>` | Switch to another project |
+| `lru-projects remove <name>` | Remove a project |
+| `lru-projects status` | Show project activity summary |
+
+### Example
 
 ```
-@lru add memcore               → Register current directory
-@lru list                       → Show active + archived projects
-@lru switch other-project       → Switch to another tracked project
-@lru remove old-project         → Remove from tracking
-@lru status                     → Show project activity summary
+User: lru-projects add
+AI:   Project added: memcore (active: 1/10)
+
+User: lru-projects list
+AI:   === Active Projects ===
+      1 | memcore | 2026-05-12 | 5 sessions
+      === Archived ===
+      old-project | 2026-04-01 | 12 sessions
+
+User: lru-projects switch memcore
+AI:   Switched to: memcore (/path/to/memcore)
 ```
 
 ---
 
-## Summary Table
+## Forge
 
-| # | Agent / Skill | Category | Purpose |
-|---|--------------|----------|---------|
-| 1 | memcore | Primary | Task orchestration, session lifecycle |
-| 2 | planner | Agent | Task breakdown, planning |
-| 3 | research | Agent | Codebase analysis |
-| 4 | memory | Agent | Context, search, diary, recall |
-| 5 | decision-log | Agent | Design decisions |
-| 6 | @save-diary / @diary | Skill | Structured session diary |
-| 7 | @library-system / @library | Skill | Knowledge library |
-| 8 | @observation | Skill | Behavioural learning |
-| 9 | @reminders | Skill | Cross-session reminders |
-| 10 | @consolidate | Skill | Memory compression & audit |
-| 11 | @plan | Skill | Work plan execution |
-| 12 | @commit | Skill | Git commits with context |
-| 13 | @lru | Skill | Multi-project tracking |
-| 14 | @forge | Skill | Self-improvement skill generation |
-| 15 | @pm | Skill | Post-mortem failure logging |
-| 16 | @init-project | Skill | Project scaffolding |
-| 17 | @setup-profile | Skill | User profile wizard |
+**Skill:** `forge`
+
+Self-improvement system — scan codebase, detect patterns, generate new skills.
+
+| Command | Description |
+|---------|-------------|
+| `forge scan` | Analyse codebase for improvement patterns |
+| `forge create <name> <desc>` | Generate a new skill from template |
+| `forge propose` | Show improvement proposals |
+| `forge list` | List all forged skills |
+
+### Example
+
+```
+User: forge scan
+AI:   === Forge Scan ===
+      Date: 2026-06-18
+      Existing skills: 9
+
+      --- Code Complexity ---
+      Total lines: 1247
+
+      --- Duplicate Patterns ---
+      Skills using $1 dispatch: 9/9
+      Missing validation: 2
+      Missing --force: 3
+
+      --- Summary ---
+      Issues found: 5
+      Proposals saved to docs/forge/proposals.md
+
+User: forge create api-tester "Auto-test API endpoints"
+AI:   ✓ Skill forged: core/skills/api-tester/SKILL.md
+      Template includes:
+        - --force flag support
+        - Input validation
+        - Error handling
+        - Usage messages
+```
+
+---
+
+## Work Plan
+
+**Skill:** `work-plan`
+
+Plan-to-execution tracking with per-task progress, integrated with git.
+
+| Command | Description |
+|---------|-------------|
+| `work-plan start <name>` | Start working on a plan |
+| `work-plan next` | Show next pending task |
+| `work-plan done [message]` | Mark task done (optional git commit) |
+| `work-plan status` | Show plan progress |
+
+### Example
+
+```
+User: work-plan start refactor-auth
+AI:   === Plan: refactor-auth ===
+      Current task (line 3): Update login controller
+
+User: work-plan done "Refactored login controller"
+AI:   ✓ Task done: Update login controller
+      Committed: Update login controller
+      Next up: Add input validation
+
+User: work-plan status
+AI:   === Work Plan Status ===
+      Active plan: refactor-auth
+      Progress: [████░░░░░░░░░░░░░░░░] 2/5 (40%)
+```
+
+---
+
+## Post-Mortem
+
+**Skill:** `post-mortem`
+
+Failure learning log — record errors, root causes, and prevention.
+
+| Command | Description |
+|---------|-------------|
+| `post-mortem log <title> [severity] [--symptoms "..."] [--cause "..."] [--resolution "..."] [--lesson "..."] [--prevention "..."]` | Log a new failure |
+| `post-mortem edit <id> <section> <content>` | Update a section |
+| `post-mortem list` | List all post-mortems |
+| `post-mortem lessons` | Show lessons learned |
+| `post-mortem delete <id>` | Delete a post-mortem |
+
+Severity: `Critical`, `High`, `Medium` (default), `Low`
+Sections: `symptoms`, `cause`, `resolution`, `lesson`, `prevention`
+
+### Example
+
+```
+User: post-mortem log "Migration failed after deploy" High \
+      --symptoms "500 error on user table" \
+      --cause "Missing column in migration" \
+      --resolution "Added missing column" \
+      --lesson "Always verify migration locally" \
+      --prevention "Add migration test to CI"
+
+AI:   Post-mortem created: PM-2026-06-18-001
+
+User: post-mortem edit PM-2026-06-18-001 cause "Migration script missing 'avatar' column"
+AI:   Updated PM-2026-06-18-001.cause
+
+User: post-mortem lessons
+AI:   ## PM-2026-06-18-001: Migration failed after deploy
+      ### Lesson Learned
+      Always verify migration locally
+```
+
+---
+
+## Dream
+
+**Skill:** `dream`
+
+Memory consolidation — scan sessions, extract durable knowledge, promote to MEMORY.md.
+
+| Command | Description |
+|---------|-------------|
+| `dream dream` | Run consolidation process |
+| `dream list` | Show consolidated knowledge |
+| `dream search <keyword>` | Search MEMORY.md entries |
+
+### How It Works
+
+1. Scans session-diary.md for completed sessions
+2. Extracts durable knowledge (decisions, patterns, corrections)
+3. Deduplicates against existing MEMORY.md entries
+4. Promotes new knowledge with metadata
+5. Discovers cross-session patterns
+
+### Example
+
+```
+User: dream dream
+AI:   🌙 Dream consolidation...
+      Sessions scanned: 5
+      Durable knowledge: 3 entries
+      ✅ Promoted to MEMORY.md:
+         - Auth pattern: Use JWT with refresh token
+         - User prefers Malay for casual conversation
+         - Never deploy on Friday afternoon
+      📊 Patterns discovered: 1
+         - Peak productivity 10:00-12:00
+```
+
+---
+
+## Goal
+
+**Skill:** `goal`
+
+Goal-driven sessions with stop conditions — prevents premature stops.
+
+| Command | Description |
+|---------|-------------|
+| `goal set <goal> [verification]` | Set session goal |
+| `goal status` | Show goal and progress |
+| `goal check` | Verify if goal met (run verifiers) |
+| `goal stop` | Mark goal as complete |
+| `goal clear` | Clear goal without completing |
+
+### Why Use Goals?
+
+Without goals, agents may stop prematurely when they think they're done. Goals enforce verification.
+
+### Example
+
+```
+User: goal set "All tests passing" "npm test returns 0"
+AI:   🎯 Goal set: All tests passing
+      Verification: npm test returns 0
+
+# ... work happens ...
+
+User: goal check
+AI:   🔍 Verifying: npm test returns 0
+      ❌ FAIL: 3 tests failing
+      📋 Remaining:
+         - Test 1: auth.test.js
+         - Test 2: user.test.js
+
+# ... more work ...
+
+User: goal check
+AI:   🔍 Verifying: npm test returns 0
+      ✅ PASS: All tests green
+      🎉 Goal achieved!
+
+User: goal stop
+AI:   Session complete: All tests passing
+```
 
 ---
 
 ## Quick Reference
 
-### Start a session
+### All Commands
+
+| Skill | Command | Description |
+|-------|---------|-------------|
+| `observation` | `observe` | Analyse patterns |
+| | `profile` | Show behavioural profile |
+| | `suggest` | Get improvement suggestions |
+| | `reset` | Reset behavioural data |
+| `reminders` | `set <due> <msg>` | Set reminder |
+| | `list` | List pending reminders |
+| | `done <id>` | Mark complete |
+| | `edit <id> <due> <msg>` | Edit reminder |
+| | `clear` | Clear completed |
+| `library-system` | `save <cat> <name> <content>` | Save knowledge |
+| | `search <keyword>` | Search entries |
+| | `list [category]` | List entries |
+| | `get <cat> <name>` | Read entry |
+| | `delete <cat> <name>` | Delete entry |
+| `lru-projects` | `add [name]` | Track project |
+| | `list` | Show projects |
+| | `switch <name>` | Change project |
+| | `remove <name>` | Remove project |
+| | `status` | Project summary |
+| `forge` | `scan` | Analyse patterns |
+| | `create <name> <desc>` | Generate skill |
+| | `propose` | Show proposals |
+| | `list` | List forged skills |
+| `work-plan` | `start <name>` | Begin plan |
+| | `next` | Next task |
+| | `done [msg]` | Complete task |
+| | `status` | Progress report |
+| `post-mortem` | `log <title> [sev] [--flags]` | Log failure |
+| | `edit <id> <section> <content>` | Update section |
+| | `list` | List failures |
+| | `lessons` | Show lessons |
+| | `delete <id>` | Delete entry |
+| `dream` | `dream` | Consolidate memory |
+| | `list` | Show consolidated knowledge |
+| | `search <keyword>` | Search MEMORY.md |
+| `goal` | `set <goal> [verification]` | Set goal |
+| | `status` | Show progress |
+| | `check` | Verify completion |
+| | `stop` | Mark complete |
+| | `clear` | Clear goal |
+
+---
+
+## Tips & Best Practices
+
+### Memory Compound Effect
+
+The more you use MemCore, the smarter it gets:
+
 ```
-@memory, what's my current status?
-@remind list
+Session 1:  Set up observation, create library entry
+Session 5:  Observation detects your patterns
+Session 10: Library has 20+ entries, forge has improvements
+Session 20: Compound intelligence — everything connected
 ```
 
-### Plan and execute
-```
-@planner, break down feature X
-@plan start feature-x
-@plan done "implemented task"
-@plan status
+### Quick Workflow
+
+```bash
+# Start
+observation profile
+reminders list
+
+# Work
+Build your app with OpenCode
+
+# Save
+library-system save architecture login-flow "Login flow using JWT"
+post-mortem log "login bug — missing validation" Medium
+
+# Consolidate
+dream dream
+
+# End session
+lru-projects add
 ```
 
-### Save knowledge
-```
-@diary save "what I did"
-@library save architecture x "notes"
-@decision-log, log the choice
-```
+### Use Goals for Complex Tasks
 
-### End session
-```
-bye / done / selesai / keluar
-→ diary saved → observation updated → reminders checked → project tracked
+For tasks with clear completion criteria:
+
+```bash
+# Set goal with verification
+goal set "API endpoint works" "curl -s localhost:8080/health returns 200"
+
+# Work until verified
+# ... code code code ...
+
+# Check
+goal check
+# ✅ PASS → goal stop
 ```
 
 ---
 
-## Common Workflows
+## Version History
 
-### Daily Session
-```
-1. Start opencode
-2. @remind list          → Check pending reminders
-3. @consolidate status   → Quick memory health check
-4. Work on tasks
-5. @diary save <focus>   → Save before ending
-6. bye                   → Auto-save, commit, track
-```
-
-### Research → Plan → Execute
-```
-1. @research, analyze codebase
-2. @planner, create implementation plan
-3. @plan start <name>
-4. @plan done "message" (repeat for each task)
-5. @commit save "summary"
-```
-
-### Log a Decision
-```
-1. @decision-log, log the decision
-2. @library save architecture decision-name "details"
-3. @diary save "logged decision about X"
-```
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.2.0 | 2026-06-18 | Added dream skill, goal skill, budgeted-read, checkpoint template, context reconstruction |
+| 1.1.0 | 2026-06-18 | Added plan agent, permission system, session index, knowledge graph, new commands |
+| 1.0.0 | 2026-05-12 | First stable release. Memory intelligence layer — 7 skills, fully standalone. |
+| 0.1.0 | - | Initial release with 19 skills |
 
 ---
 
-*For more details, see agent documentation in `core/agents/*.md` and skill documentation in `core/skills/*/SKILL.md`*
+_Last updated: 2026-06-18_

@@ -46,6 +46,12 @@ if [[ "$1" == "add" ]]; then
     PATH_VAL="$PWD"
     DATE=$(date +%Y-%m-%d)
 
+    # Validate name — no pipe characters (breaks markdown table)
+    if echo "$NAME" | grep -q '|'; then
+        echo "Error: Project name cannot contain '|' character."
+        exit 1
+    fi
+
     # Count sessions from diary
     SESSION_COUNT=0
     if [[ -f "docs/session-diary.md" ]]; then
@@ -97,9 +103,6 @@ EOF
     fi
 
     # Add as active (at position 1, shift others)
-    # Find the current top rank
-    sed -i 's/^| \([0-9]\)/| \x27$\x27/' "$PROJECTS_FILE" 2>/dev/null || true
-    # Simple approach: insert at top of active section
     sed -i "/^## Active/a| 1 | $NAME | $DATE | $SESSION_COUNT | $PATH_VAL |" "$PROJECTS_FILE"
 
     # Renumber active entries
@@ -172,14 +175,15 @@ if [[ "$1" == "switch" ]]; then
         exit 1
     fi
 
-    # Update last active time
+    # Update last active time (preserve session count)
     DATE=$(date +%Y-%m-%d)
-    sed -i "s/| $NAME | [0-9-]* | [0-9]* | $PROJECT_PATH |/| $NAME | $DATE | ... | $PROJECT_PATH |/" "$PROJECTS_FILE"
+    EXISTING_SESS=$(echo "$PROJECT_LINE" | awk -F'|' '{print $5}' | xargs)
+    sed -i "s/| $NAME | [0-9-]* | [0-9]* | $PROJECT_PATH |/| $NAME | $DATE | $EXISTING_SESS | $PROJECT_PATH |/" "$PROJECTS_FILE"
 
     # Move to top of active list
     grep -v "| $NAME |" "$PROJECTS_FILE" > "${PROJECTS_FILE}.tmp"
     mv "${PROJECTS_FILE}.tmp" "$PROJECTS_FILE"
-    sed -i "/^## Active/a| 0 | $NAME | $DATE | ... | $PROJECT_PATH |" "$PROJECTS_FILE"
+    sed -i "/^## Active/a| 0 | $NAME | $DATE | $EXISTING_SESS | $PROJECT_PATH |" "$PROJECTS_FILE"
 
     echo "Switched to: $NAME ($PROJECT_PATH)"
     echo "Run 'cd $PROJECT_PATH' to navigate."
@@ -228,8 +232,12 @@ if [[ "$1" == "status" ]]; then
     fi
 
     CURRENT_PROJECT=$(basename "$PWD")
-    if grep -q "| $CURRENT_PROJECT |" "$PROJECTS_FILE" 2>/dev/null; then
+    CURRENT_PATH="$PWD"
+    # Check if current dir is tracked (match by path for accuracy)
+    if grep -q "| $CURRENT_PATH |" "$PROJECTS_FILE" 2>/dev/null; then
         echo "Current: $CURRENT_PROJECT (tracked)"
+    elif grep -q "| $CURRENT_PROJECT |" "$PROJECTS_FILE" 2>/dev/null; then
+        echo "Current: $CURRENT_PROJECT (tracked, different path)"
     else
         echo "Current: $CURRENT_PROJECT (not tracked — use '@lru add')"
     fi
