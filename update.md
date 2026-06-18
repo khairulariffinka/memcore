@@ -23,7 +23,12 @@ To use, append after command: `"load update.md --dry-run"`
 
 ## Changelog
 
-### v1.2.0 (Current)
+### v1.3.0 (Current)
+- Added compress skill — token compression (lite/full/ultra modes, ~75% output savings)
+- Added compress-file skill — memory file compression (~46% input savings)
+- Improved opencode.json conflict resolution — default to Merge, clear warnings
+
+### v1.2.0
 - Added dream skill — memory consolidation (scan sessions, extract durable knowledge, promote to MEMORY.md)
 - Added goal skill — goal-driven sessions with stop conditions and verification checklists
 - Added budgeted-read.sh — token-aware file reading with section-aware truncation
@@ -296,7 +301,7 @@ In OpenCode:
 
 ## Version
 
-Current: **1.2.0**
+Current: **1.3.0**
 
 ---
 
