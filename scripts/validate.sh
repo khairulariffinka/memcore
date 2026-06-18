@@ -58,7 +58,7 @@ check "2 agent files (found: $agent_count)" "$([ "$agent_count" -eq 2 ] && echo 
 # ── 2. Skill count ──
 echo "── Skill Count ──"
 skill_count=$(ls "$SKILLS_DIR"/*/SKILL.md 2>/dev/null | wc -l)
-check "11 skill files (found: $skill_count)" "$([ "$skill_count" -eq 11 ] && echo "pass" || echo "fail")"
+check "5 skill files (found: $skill_count)" "$([ "$skill_count" -eq 5 ] && echo "pass" || echo "fail")"
 
 # ── 3. YAML frontmatter ──
 echo "── YAML Frontmatter ──"

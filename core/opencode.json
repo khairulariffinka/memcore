@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   "agent": {
     "memcore": {
-      "description": "Memory intelligence layer for OpenCode — observation, reminders, library, LRU, forge, work-plan, post-mortem, dream, goal, compress, compress-file",
+      "description": "Memory intelligence layer for OpenCode — memory, reminders, work, improve, compress",
       "mode": "primary",
       "permission": {
         "edit": "allow",
@@ -27,13 +27,7 @@
     }
   },
   "skill": {
-    "forge": {
-      "permission": "ask"
-    },
-    "post-mortem": {
-      "permission": "ask"
-    },
-    "dream": {
+    "improve": {
       "permission": "ask"
     }
   }

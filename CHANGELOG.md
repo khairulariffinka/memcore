@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0] - 2026-06-18
+
+### Simplified
+- **11 skills → 5 skills** — Ultra simple, merged similar functions
+- **memory** = observation + library-system + dream
+- **work** = work-plan + goal
+- **improve** = post-mortem + forge
+- **compress** = compress + compress-file
+- **reminders** = kept as-is
+
+### Removed
+- `observation` → merged into `memory`
+- `library-system` → merged into `memory`
+- `dream` → merged into `memory`
+- `work-plan` → merged into `work`
+- `goal` → merged into `work`
+- `post-mortem` → merged into `improve`
+- `forge` → merged into `improve`
+- `compress-file` → merged into `compress`
+- `lru-projects` → removed (not core)
+
 ## [1.3.0] - 2026-06-18
 
 ### Added
