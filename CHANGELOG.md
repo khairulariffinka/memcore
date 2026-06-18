@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.0] - 2026-06-18
+
+### Added
+- **compress skill** — Token compression: cut ~75% output tokens (lite/full/ultra modes)
+- **compress-file skill** — Memory file compression: rewrite files to terse format (~46% savings)
+
+### Changed
+- **memcore.md** — Added compress skills to routing table
+- **README.md** — Updated to v1.3.0 with compress skills
+- **TUTORIALS.md** — Added compress and compress-file tutorials
+- **VERSION.yaml** — Updated to v1.3.0 with new skills
+
 ## [1.2.0] - 2026-06-18
 
 ### Added

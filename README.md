@@ -1,13 +1,13 @@
 # MemCore
 
-![Version](https://img.shields.io/badge/version-1.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.3.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 **Memory intelligence layer for [OpenCode CLI](https://opencode.ai)**
 
-Behavioural observation, cross-session reminders, knowledge library, multi-project tracking, self-improvement forge, work plan execution, failure learning, memory consolidation, and goal-driven sessions — all in lightweight markdown + bash.
+Behavioural observation, cross-session reminders, knowledge library, multi-project tracking, self-improvement forge, work plan execution, failure learning, memory consolidation, goal-driven sessions, and token compression — all in lightweight markdown + bash.
 
-> Your AI never forgets.
+> Your AI never forgets. And talks less.
 
 ---
 
@@ -40,6 +40,8 @@ Press `TAB` until you see `memcore`.
 | **Post-Mortem** | Failure logging with root cause, resolution, prevention |
 | **Dream** | Memory consolidation — scan sessions, extract durable knowledge, promote to MEMORY.md |
 | **Goal** | Goal-driven sessions with stop conditions and verification checklists |
+| **Compress** | Token compression — cut ~75% output tokens while keeping technical accuracy |
+| **Compress File** | Rewrite memory files into terse format — cut ~46% input tokens every session |
 
 ---
 
@@ -52,7 +54,7 @@ memcore/
 │   │   ├── memcore.md           # Primary orchestrator (mode: primary)
 │   │   └── memcore-plan.md      # Read-only planning agent (mode: plan)
 │   │
-│   ├── skills/                  # 8 skill modules
+│   ├── skills/                  # 11 skill modules
 │   │   ├── observation/         # Behavioural learning (Mulahazah)
 │   │   ├── reminders/           # Cross-session reminders
 │   │   ├── library-system/      # Knowledge library by category
@@ -61,7 +63,9 @@ memcore/
 │   │   ├── work-plan/           # Plan-to-execution tracking
 │   │   ├── post-mortem/         # Failure learning log
 │   │   ├── dream/               # Memory consolidation (MiMo-inspired)
-│   │   └── goal/                # Goal-driven sessions with stop conditions
+│   │   ├── goal/                # Goal-driven sessions with stop conditions
+│   │   ├── compress/            # Token compression (caveman-inspired)
+│   │   └── compress-file/       # Memory file compression
 │   │
 │   └── opencode.json            # Agent & skill permissions
 │
@@ -107,6 +111,8 @@ memcore/
 | `post-mortem` | Log/edit/list/learn from failures |
 | `dream` | Consolidate session knowledge into durable MEMORY.md |
 | `goal` | Goal-driven sessions with stop conditions |
+| `compress` | Cut ~75% output tokens (lite/full/ultra modes) |
+| `compress-file` | Rewrite memory files to terse format (~46% savings) |
 
 ---
 
@@ -122,4 +128,4 @@ memcore/
 
 MIT License
 
-**Version**: 1.2.0
+**Version**: 1.3.0
