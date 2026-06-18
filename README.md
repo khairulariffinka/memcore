@@ -1,11 +1,11 @@
 # MemCore
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
 **Memory intelligence layer for [OpenCode CLI](https://opencode.ai)**
 
-Behavioural observation, cross-session reminders, knowledge library, multi-project tracking, self-improvement forge, work plan execution, and failure learning — all in lightweight markdown + bash.
+Behavioural observation, cross-session reminders, knowledge library, multi-project tracking, self-improvement forge, work plan execution, failure learning, memory consolidation, and goal-driven sessions — all in lightweight markdown + bash.
 
 > Your AI never forgets.
 
@@ -38,6 +38,8 @@ Press `TAB` until you see `memcore`.
 | **Forge** | Self-improvement — scan codebase, generate new skills (human-in-the-loop) |
 | **Work Plan** | Plan-to-execution with per-task tracking |
 | **Post-Mortem** | Failure logging with root cause, resolution, prevention |
+| **Dream** | Memory consolidation — scan sessions, extract durable knowledge, promote to MEMORY.md |
+| **Goal** | Goal-driven sessions with stop conditions and verification checklists |
 
 ---
 
@@ -47,37 +49,64 @@ Press `TAB` until you see `memcore`.
 memcore/
 ├── core/
 │   ├── agents/
-│   │   └── memcore.md        # Primary orchestrator
+│   │   ├── memcore.md           # Primary orchestrator (mode: primary)
+│   │   └── memcore-plan.md      # Read-only planning agent (mode: plan)
 │   │
-│   └── skills/               # 7 skill modules
-│       ├── observation/      # Behavioural learning (Mulahazah)
-│       ├── reminders/        # Cross-session reminders
-│       ├── library-system/   # Knowledge library by category
-│       ├── lru-projects/     # Multi-project LRU tracking
-│       ├── forge/            # Self-improvement skill generator
-│       ├── work-plan/        # Plan-to-execution tracking
-│       └── post-mortem/      # Failure learning log
+│   ├── skills/                  # 8 skill modules
+│   │   ├── observation/         # Behavioural learning (Mulahazah)
+│   │   ├── reminders/           # Cross-session reminders
+│   │   ├── library-system/      # Knowledge library by category
+│   │   ├── lru-projects/        # Multi-project LRU tracking
+│   │   ├── forge/               # Self-improvement skill generator
+│   │   ├── work-plan/           # Plan-to-execution tracking
+│   │   ├── post-mortem/         # Failure learning log
+│   │   ├── dream/               # Memory consolidation (MiMo-inspired)
+│   │   └── goal/                # Goal-driven sessions with stop conditions
+│   │
+│   └── opencode.json            # Agent & skill permissions
 │
-├── docs/                     # Documentation
-├── templates/                # Global memory templates
-├── scripts/                  # Helper scripts
-├── install.md                # Install instructions
-└── update.md                 # Update instructions
+├── docs/                        # Documentation
+├── templates/                   # Global memory templates
+│   ├── checkpoint.md            # 11-section session state snapshot
+│   └── global-memory/
+│       ├── current-session.md   # Active session context
+│       ├── session-index.md     # Cross-session recall index
+│       ├── knowledge-graph.md   # Cross-skill references
+│       ├── user-profile.md      # User preferences
+│       └── work-diary/          # Session logs
+│
+├── scripts/                     # Helper scripts
+│   ├── budgeted-read.sh         # Token-aware file reading
+│   └── validate.sh              # Validation script
+│
+├── install.md                   # Install instructions
+└── update.md                    # Update instructions
 ```
 
 ---
 
-## Commands
+## Agents
 
-| Subagent | Purpose |
-|----------|---------|
-| `@observation` / `@observe` | Detect user patterns, load behavioural profile |
-| `@reminders` / `@remind` | Set/list/done/clear cross-session reminders |
-| `@library` / `@library-system` | Save/search/list knowledge entries by category |
-| `@lru` | Add/list/switch multi-project LRU tracking |
-| `@forge` | Scan/create/propose self-improvement skills |
-| `@plan` | Start/next/done/status work plan execution |
-| `@pm` / `@post-mortem` | Log/list/learn from failures |
+| Agent | Mode | Purpose |
+|-------|------|---------|
+| `memcore` | primary | Full access — edit, bash, skills |
+| `memcore-plan` | plan | Read-only — explore, analyze, plan |
+
+---
+
+## Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `observation` | Detect user patterns, load behavioural profile |
+| `reminders` | Set/list/done/edit/clear cross-session reminders |
+| `library-system` | Save/search/list/get/delete knowledge by category |
+| `lru-projects` | Add/list/switch/remove multi-project LRU tracking |
+| `forge` | Scan/create/propose self-improvement skills |
+| `work-plan` | Start/next/done/status work plan execution |
+| `post-mortem` | Log/edit/list/learn from failures |
+| `dream` | Consolidate session knowledge into durable MEMORY.md |
+| `goal` | Goal-driven sessions with stop conditions |
 
 ---
 
@@ -93,4 +122,4 @@ memcore/
 
 MIT License
 
-**Version**: 0.2.0
+**Version**: 1.2.0

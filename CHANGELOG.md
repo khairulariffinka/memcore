@@ -1,23 +1,72 @@
 # Changelog
 
-## [0.2.0] - 2026-05-12
+## [1.2.0] - 2026-06-18
+
+### Added
+- **dream skill** — Memory consolidation: scan sessions, extract durable knowledge, promote to MEMORY.md
+- **goal skill** — Goal-driven sessions with stop conditions and verification checklists
+- **budgeted-read.sh** — Token-aware file reading with section-aware truncation
+- **checkpoint.md** — 11-section session state snapshot (MiMo-Code inspired)
+- **Context reconstruction protocol** — Structured approach to rebuild context from checkpoint
 
 ### Changed
-- **Refocus**: Stripped 12 overlapping skills, kept 7 unique memory skills
-- **Identity**: Memory intelligence layer for OpenCode — complement to CodeXen
+- **memcore.md** — Added context reconstruction protocol section
+- **Session auto-save** — Now includes dream consolidation step
+- **VERSION.yaml** — Updated to v1.2.0 with new skills and features
+
+## [1.1.0] - 2026-06-18
+
+### Added
+- **memcore-plan agent** — Read-only planning agent (mode: plan) for safe codebase exploration
+- **Permission system** — opencode.json now configures bash: ask for safety
+- **Session index** — Cross-session recall index for quick search
+- **Knowledge graph** — Cross-skill references (observation ↔ post-mortem ↔ library)
+- **Post-mortem edit** — Update sections after creation
+- **Post-mortem arguments** — Add details inline: --symptoms, --cause, --resolution, --lesson, --prevention
+- **Library delete** — Remove knowledge entries
+- **Remind edit** — Edit existing reminders
+- **Input validation** — Pipe character validation for lru, reminders, work-plan
+- **--force flag** — Non-interactive execution for forge, library, observation
+
+### Fixed
+- **Skill aliases** — All references now use exact registered skill names
+- **Session count corruption** — LRU switch preserves session count
+- **Post-mortem ID collision** — Auto-increment IDs for same-day entries
+- **Forge sed portability** — Replaced GNU sed with portable awk
+- **Non-interactive hangs** — Added --force flag to prevent read -r hangs
+- **Stale documentation** — Updated agent/skill counts across all files
+
+### Changed
+- **Bash permission** — Changed from allow to ask for safety
+- **Forge scan** — Now does real code pattern analysis (complexity, validation, dependencies)
+- **Forge create** — Generates useful template with --force, validation, error handling
+- **Observation** — Now analyzes post-mortem data for error frequency
+- **Grep optimization** — Language detection from 13 calls to 2 calls
+
+### Improved
+- **opencode.json** — Added permission block, skill permissions, plan agent config
+- **Validation script** — Updated for 2 agents, added plan agent permission check
+- **Memory templates** — Added session-index.md, knowledge-graph.md, improved current-session.md
+
+## [1.0.0] - 2026-05-12
+
+### Refocus
+- **Identity**: Memory intelligence layer for OpenCode — fully standalone
 - **Core**: Reduced from 5 agents + 19 skills → 1 agent + 7 skills
-- **memcore.md**: Updated routing table, session protocol, auto-save workflow
-- **README.md**: Reflect new scope and positioning
+- Stripped 12 overlapping skills (planner, research, memory, decision-log,
+  orchestration, init-project, setup-profile, save-diary, echo-recall,
+  auto-commit, memory-consolidation, session-briefing)
+- Stripped 4 overlapping agents (planner, research, memory, decision-log)
 
-### Removed
-- Agents: planner, research, memory, decision-log
-- Skills: planner, research, memory, decision-log, orchestration, init-project,
-  setup-profile, save-diary, echo-recall, auto-commit, memory-consolidation,
-  session-briefing
-
-### Kept
-- Skills: observation, reminders, library-system, lru-projects, forge,
-  work-plan, post-mortem
+### Polish
+- Removed all external dependencies from remaining 7 skills
+- Fixed observation skill — now reads from session diary, not planner.md
+- Fixed work-plan skill — standalone plan files, no planner.md dependency
+- Fixed forge skill — removed references to deleted memory/save-diary skills
+- Rewrote TUTORIALS.md — 587 lines → clean 7-skill focused guide
+- Updated memcore.md routing, session protocol, auto-save workflow
+- All docs, config, and install files updated for new scope
+- Zero broken references — fully standalone
 
 ## [0.1.0] - 2026-05-11
 

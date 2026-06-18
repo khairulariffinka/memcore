@@ -5,7 +5,7 @@ description: Plan-to-execution tracking — breakdown, assign, execute, commit p
 
 # Work Plan Skill
 
-Execute task plans with per-task tracking and optional auto-commit. Integrates with planner.md, session diary, and git.
+Execute task plans with per-task tracking — create, execute, and complete tasks from plan files in docs/plans/.
 
 ## Primary Functions
 
@@ -28,33 +28,22 @@ if [[ "$1" == "start" ]]; then
     NAME="$2"
     PLAN_FILE="$PLAN_DIR/$NAME.md"
 
+    # Validate plan name — only alphanumeric, dash, underscore
+    if [[ ! "$NAME" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        echo "Error: Plan name must contain only letters, numbers, dash, or underscore."
+        exit 1
+    fi
+
     if [[ ! -f "$PLAN_FILE" ]]; then
-        # Search for plan in planner.md
-        if [[ -f "planner.md" ]]; then
-            TASKS=$(grep -nE "^- \[ \]" planner.md | head -10)
-            if [[ -n "$TASKS" ]]; then
-                mkdir -p "$PLAN_DIR"
-                cat > "$PLAN_FILE" << EOF
-# Plan: $NAME
-
-Started: $(date +%Y-%m-%d)
-Source: planner.md
-
-## Tasks
-$(echo "$TASKS" | sed 's/^[0-9]*:- //')
-
----
-EOF
-                echo "Plan created from planner.md tasks: $PLAN_FILE"
-            else
-                echo "No pending tasks found in planner.md."
-                exit 0
-            fi
-        else
-            echo "Plan file not found: $PLAN_FILE"
-            echo "Create one at docs/plans/<name>.md"
-            exit 1
-        fi
+        echo "Plan file not found: docs/plans/$NAME.md"
+        echo "Create one first. Example format:"
+        echo ""
+        echo "# Plan: $NAME"
+        echo ""
+        echo "- [ ] Task 1 description"
+        echo "- [ ] Task 2 description"
+        echo "- [ ] Task 3 description"
+        exit 1
     fi
 
     mkdir -p "$PLAN_DIR"
@@ -134,15 +123,6 @@ if [[ "$1" == "done" ]]; then
 
     echo "✓ Task done: $TASK_DESC"
 
-    # Also update planner.md if sourced from it
-    if grep -q "Source: planner.md" "$PLAN_FILE" 2>/dev/null; then
-        # Try to match and update planner.md
-        ESCAPED=$(echo "$TASK_DESC" | sed 's/[]\/$*.^[]/\\&/g')
-        if [[ -f "planner.md" ]]; then
-            sed -i "s/^- \[ \] $ESCAPED/- [x] $ESCAPED/" planner.md 2>/dev/null
-        fi
-    fi
-
     # Auto-commit if git repo and message provided
     if git rev-parse --git-dir > /dev/null 2>&1 && [[ -n "$COMMIT_MSG" ]]; then
         git add -A
@@ -187,17 +167,12 @@ if [[ "$1" == "status" ]]; then
 
         if [[ $TOTAL -gt 0 ]]; then
             PCT=$((DONE * 100 / TOTAL))
-            echo "Progress: $DONE/$TOTAL ($PCT%)"
-        fi
-    fi
-
-    # Check planner.md tasks too
-    if [[ -f "planner.md" ]]; then
-        P=$(grep -cE "^- \[ \]" planner.md 2>/dev/null || echo 0)
-        D=$(grep -c "^- \[x\]" planner.md 2>/dev/null || echo 0)
-        T=$((P + D))
-        if [[ $T -gt 0 ]]; then
-            echo "Planner: $D/$T done ($((D * 100 / T))%)"
+            # Visual progress bar
+            FILLED=$((PCT / 5))
+            EMPTY=$((20 - FILLED))
+            BAR=$(printf '%*s' "$FILLED" '' | tr ' ' '█')
+            BAR="$BAR$(printf '%*s' "$EMPTY" '' | tr ' ' '░')"
+            echo "Progress: [$BAR] $DONE/$TOTAL ($PCT%)"
         fi
     fi
 fi

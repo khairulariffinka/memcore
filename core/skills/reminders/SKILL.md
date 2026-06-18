@@ -14,6 +14,7 @@ Cross-session reminders — set, view, and complete reminders that persist acros
 | **set** | Set reminder baru |
 | **list** | List all pending reminders |
 | **done** | Tandakan reminder selesai |
+| **edit** | Edit reminder sedia ada |
 | **clear** | Clear all completed reminders |
 
 ## Storage
@@ -46,6 +47,18 @@ if [[ "$1" == "set" ]]; then
     if [[ -z "$DUE" || -z "$MESSAGE" ]]; then
         echo "Usage: @remind set <due> <message>"
         echo "Due options: next-session, tomorrow, YYYY-MM-DD"
+        exit 1
+    fi
+
+    # Validate due format
+    if [[ "$DUE" != "next-session" && "$DUE" != "tomorrow" && ! "$DUE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo "Error: Invalid due format. Use: next-session, tomorrow, or YYYY-MM-DD"
+        exit 1
+    fi
+
+    # Validate message — no pipe characters (breaks markdown table)
+    if echo "$MESSAGE" | grep -q '|'; then
+        echo "Error: Message cannot contain '|' character."
         exit 1
     fi
 
@@ -138,6 +151,49 @@ if [[ "$1" == "done" ]]; then
     sed -i "s/_Last updated: .*/_Last updated: $DATE_/" "$REMINDER_FILE"
 
     echo "Reminder $ID marked as done."
+fi
+
+# @remind edit <id> <due> <message>
+if [[ "$1" == "edit" ]]; then
+    ID="$2"
+    DUE="$3"
+    shift 3
+    MESSAGE="$*"
+
+    if [[ -z "$ID" || -z "$DUE" || -z "$MESSAGE" ]]; then
+        echo "Usage: @remind edit <id> <due> <message>"
+        echo "Example: @remind edit REM-001 tomorrow Buy groceries"
+        exit 1
+    fi
+
+    if [[ ! -f "$REMINDER_FILE" ]]; then
+        echo "No reminders."
+        exit 0
+    fi
+
+    if ! grep -q "| $ID |" "$REMINDER_FILE" 2>/dev/null; then
+        echo "Reminder '$ID' not found."
+        exit 1
+    fi
+
+    # Validate due format
+    if [[ "$DUE" != "next-session" && "$DUE" != "tomorrow" && ! "$DUE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        echo "Error: Invalid due format. Use: next-session, tomorrow, or YYYY-MM-DD"
+        exit 1
+    fi
+
+    # Validate message
+    if echo "$MESSAGE" | grep -q '|'; then
+        echo "Error: Message cannot contain '|' character."
+        exit 1
+    fi
+
+    DATE=$(date +%Y-%m-%d)
+    # Replace the line matching this ID
+    sed -i "s/| $ID |.*| Pending |/| $ID | $DATE | $DUE | $MESSAGE | Pending |/" "$REMINDER_FILE"
+    sed -i "s/_Last updated: .*/_Last updated: $DATE_/" "$REMINDER_FILE"
+
+    echo "Reminder $ID updated: \"$message\" (due: $DUE)"
 fi
 
 # @remind clear

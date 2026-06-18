@@ -2,8 +2,39 @@
   "$schema": "https://opencode.ai/config.json",
   "agent": {
     "memcore": {
-      "description": "Memory intelligence layer for OpenCode — observation, reminders, library, LRU, forge, work-plan & post-mortem",
-      "mode": "primary"
+      "description": "Memory intelligence layer for OpenCode — observation, reminders, library, LRU, forge, work-plan, post-mortem, dream, goal",
+      "mode": "primary",
+      "permission": {
+        "edit": "allow",
+        "bash": "ask",
+        "glob": "allow",
+        "grep": "allow",
+        "read": "allow",
+        "skill": "allow"
+      }
+    },
+    "memcore-plan": {
+      "description": "Read-only planning agent for MemCore — analysis, exploration, and task breakdown without modifications",
+      "mode": "plan",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "glob": "allow",
+        "grep": "allow",
+        "read": "allow",
+        "skill": "allow"
+      }
+    }
+  },
+  "skill": {
+    "forge": {
+      "permission": "ask"
+    },
+    "post-mortem": {
+      "permission": "ask"
+    },
+    "dream": {
+      "permission": "ask"
     }
   }
 }

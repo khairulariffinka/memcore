@@ -10,7 +10,7 @@
 >
 > This page is for **detailed guides** when you want to learn more.
 
-MemCore — memory intelligence layer with 7 focused skills.
+MemCore — memory intelligence layer with 9 focused skills.
 
 ---
 
@@ -29,6 +29,8 @@ MemCore — memory intelligence layer with 7 focused skills.
 8. [Forge](#forge) — Self-improvement skill generator
 9. [Work Plan](#work-plan) — Plan execution tracking
 10. [Post-Mortem](#post-mortem) — Failure learning
+11. [Dream](#dream) — Memory consolidation
+12. [Goal](#goal) — Goal-driven sessions
 
 ---
 
@@ -54,7 +56,7 @@ In OpenCode, load the install file:
 Press `TAB` until you see `memcore`, then start using it:
 
 ```
-@observation observe
+observation observe
 ```
 
 ---
@@ -66,21 +68,22 @@ Press `TAB` until you see `memcore`, then start using it:
 When you start a session, the following happens:
 
 1. MemCore loads its configuration
-2. You can check pending reminders: `@reminders list`
-3. You can load behavioural profile: `@observation profile`
+2. You can check pending reminders: `reminders list`
+3. You can load behavioural profile: `observation profile`
 
 ### During Session
 
-Use any of the 7 skills as needed.
+Use any of the 9 skills as needed.
 
 ### End Session
 
 When you say "bye", "done", "selesai", or "keluar":
 
-1. Behavioural profile updates via `@observation observe`
-2. Pending reminders shown via `@reminders list`
-3. Project tracking updates via `@lru add`
-4. Session summary saved
+1. Behavioural profile updates via `observation observe`
+2. Pending reminders shown via `reminders list`
+3. Project tracking updates via `lru-projects add`
+4. Session knowledge consolidated via `dream`
+5. Session summary saved
 
 ---
 
@@ -90,32 +93,32 @@ When you say "bye", "done", "selesai", or "keluar":
 
 ```bash
 # Observe your patterns
-@observation observe
+observation observe
 
 # Set a reminder
-@remind set tomorrow "Review PR"
+reminders set tomorrow "Review PR"
 
 # Save knowledge
-@library save architecture api-design "RESTful API design patterns"
+library-system save architecture api-design "RESTful API design patterns"
 
 # Track this project
-@lru add
+lru-projects add
 ```
 
 ---
 
 ## Observation
 
-**Subagent:** `@observation` / `@observe`
+**Skill:** `observation`
 
 Tracks your behavioural patterns across sessions:
 
 | Command | Description |
 |---------|-------------|
-| `@observation observe` | Analyse session diary & planner for user patterns |
-| `@observation profile` | Show current observed user profile |
-| `@observation suggest` | Suggest adjustments based on observed patterns |
-| `@observation reset` | Reset behavioural data |
+| `observation observe` | Analyse session diary & planner for user patterns |
+| `observation profile` | Show current observed user profile |
+| `observation suggest` | Suggest adjustments based on observed patterns |
+| `observation reset` | Reset behavioural data |
 
 ### What It Tracks
 
@@ -126,11 +129,12 @@ Tracks your behavioural patterns across sessions:
 | Completion Rate | How often tasks are completed |
 | Agent Preference | Most-used subagents |
 | Session Length | Average session duration |
+| Error Frequency | Common failure patterns |
 
 ### Example
 
 ```
-User: @observation observe
+User: observation observe
 AI:   Observing 12 sessions...
       ✓ Language: Malay (preferred)
       ✓ Peak hours: 10:00
@@ -142,45 +146,50 @@ AI:   Observing 12 sessions...
 
 ## Reminders
 
-**Subagent:** `@reminders` / `@remind`
+**Skill:** `reminders`
 
 Cross-session reminders with due dates and persistence.
 
 | Command | Description |
 |---------|-------------|
-| `@remind set <due> <message>` | Set a new reminder |
-| `@remind list` | Show all pending reminders |
-| `@remind done <id>` | Mark reminder complete |
-| `@remind clear` | Clear all completed reminders |
+| `reminders set <due> <message>` | Set a new reminder |
+| `reminders list` | Show all pending reminders |
+| `reminders done <id>` | Mark reminder complete |
+| `reminders edit <id> <due> <message>` | Edit an existing reminder |
+| `reminders clear` | Clear all completed reminders |
 
 Due options: `next-session`, `tomorrow`, `YYYY-MM-DD`
 
 ### Example
 
 ```
-User: @remind set next-session "Check deployment status"
+User: reminders set next-session "Check deployment status"
 AI:   Reminder set: REM-001 — "Check deployment status" (due: next-session)
 
 --- Next session ---
-User: @remind list
+User: reminders list
 AI:   ⚠️ Due reminders:
       REM-001 — "Check deployment status" (due: next-session)
+
+User: reminders edit REM-001 tomorrow "Updated deployment check"
+AI:   Reminder REM-001 updated: "Updated deployment check" (due: tomorrow)
 ```
 
 ---
 
 ## Library System
 
-**Subagent:** `@library` / `@library-system`
+**Skill:** `library-system`
 
 Organised knowledge library with categorised entries.
 
 | Command | Description |
 |---------|-------------|
-| `@library save <category> <name> [content]` | Save a knowledge entry |
-| `@library search <keyword>` | Search entries by keyword |
-| `@library list [category]` | List entries (by category or all) |
-| `@library get <category> <name>` | Read a specific entry |
+| `library-system save <category> <name> [content]` | Save a knowledge entry |
+| `library-system search <keyword>` | Search entries by keyword |
+| `library-system list [category]` | List entries (by category or all) |
+| `library-system get <category> <name>` | Read a specific entry |
+| `library-system delete <category> <name>` | Delete an entry |
 
 ### Categories
 
@@ -194,131 +203,251 @@ Organised knowledge library with categorised entries.
 ### Example
 
 ```
-User: @library save architecture repository-pattern "Repository pattern with Laravel:
+User: library-system save architecture repository-pattern "Repository pattern with Laravel:
       - Interface + Implementation
       - Dependency injection via constructor
       - Unit test with mocks"
 
 AI:   Entry saved: LIB-2026-001 → docs/library/architecture/repository-pattern.md
 
-User: @library search repository
+User: library-system search repository
 AI:   LIB-2026-001 — Repository Pattern (architecture)
+
+User: library-system delete architecture repository-pattern
+AI:   Deleted: architecture/repository-pattern
 ```
 
 ---
 
 ## LRU Projects
 
-**Subagent:** `@lru`
+**Skill:** `lru-projects`
 
 Multi-project management with LRU eviction — 10 active slots, auto-archival.
 
 | Command | Description |
 |---------|-------------|
-| `@lru add [name]` | Register current project |
-| `@lru list` | List all tracked projects (active + archived) |
-| `@lru switch <name>` | Switch to another project |
-| `@lru remove <name>` | Remove a project |
-| `@lru status` | Show project activity summary |
+| `lru-projects add [name]` | Register current project |
+| `lru-projects list` | List all tracked projects (active + archived) |
+| `lru-projects switch <name>` | Switch to another project |
+| `lru-projects remove <name>` | Remove a project |
+| `lru-projects status` | Show project activity summary |
 
 ### Example
 
 ```
-User: @lru add
+User: lru-projects add
 AI:   Project added: memcore (active: 1/10)
 
-User: @lru list
+User: lru-projects list
 AI:   === Active Projects ===
       1 | memcore | 2026-05-12 | 5 sessions
       === Archived ===
       old-project | 2026-04-01 | 12 sessions
+
+User: lru-projects switch memcore
+AI:   Switched to: memcore (/path/to/memcore)
 ```
 
 ---
 
 ## Forge
 
-**Subagent:** `@forge`
+**Skill:** `forge`
 
 Self-improvement system — scan codebase, detect patterns, generate new skills.
 
 | Command | Description |
 |---------|-------------|
-| `@forge scan` | Analyse codebase for improvement patterns |
-| `@forge create <name> <desc>` | Generate a new skill from template |
-| `@forge propose` | Show improvement proposals |
-| `@forge list` | List all forged skills |
+| `forge scan` | Analyse codebase for improvement patterns |
+| `forge create <name> <desc>` | Generate a new skill from template |
+| `forge propose` | Show improvement proposals |
+| `forge list` | List all forged skills |
 
 ### Example
 
 ```
-User: @forge scan
+User: forge scan
 AI:   === Forge Scan ===
-      Existing skills: 7
-      Pattern analysis complete
+      Date: 2026-06-18
+      Existing skills: 9
 
-      Suggestions:
-      1. Review overlapping functionality
-      2. Add error handling improvements
+      --- Code Complexity ---
+      Total lines: 1247
 
-User: @forge create api-tester "Auto-test API endpoints"
+      --- Duplicate Patterns ---
+      Skills using $1 dispatch: 9/9
+      Missing validation: 2
+      Missing --force: 3
+
+      --- Summary ---
+      Issues found: 5
+      Proposals saved to docs/forge/proposals.md
+
+User: forge create api-tester "Auto-test API endpoints"
 AI:   ✓ Skill forged: core/skills/api-tester/SKILL.md
+      Template includes:
+        - --force flag support
+        - Input validation
+        - Error handling
+        - Usage messages
 ```
 
 ---
 
 ## Work Plan
 
-**Subagent:** `@plan`
+**Skill:** `work-plan`
 
 Plan-to-execution tracking with per-task progress, integrated with git.
 
 | Command | Description |
 |---------|-------------|
-| `@plan start <name>` | Start working on a plan |
-| `@plan next` | Show next pending task |
-| `@plan done [message]` | Mark task done (optional git commit) |
-| `@plan status` | Show plan progress |
+| `work-plan start <name>` | Start working on a plan |
+| `work-plan next` | Show next pending task |
+| `work-plan done [message]` | Mark task done (optional git commit) |
+| `work-plan status` | Show plan progress |
 
 ### Example
 
 ```
-User: @plan start refactor-auth
+User: work-plan start refactor-auth
 AI:   === Plan: refactor-auth ===
-      Current task: Update login controller
+      Current task (line 3): Update login controller
 
-User: @plan done "Refactored login controller"
+User: work-plan done "Refactored login controller"
 AI:   ✓ Task done: Update login controller
+      Committed: Update login controller
       Next up: Add input validation
+
+User: work-plan status
+AI:   === Work Plan Status ===
+      Active plan: refactor-auth
+      Progress: [████░░░░░░░░░░░░░░░░] 2/5 (40%)
 ```
 
 ---
 
 ## Post-Mortem
 
-**Subagent:** `@pm` / `@post-mortem`
+**Skill:** `post-mortem`
 
 Failure learning log — record errors, root causes, and prevention.
 
 | Command | Description |
 |---------|-------------|
-| `@pm log <title> [severity]` | Log a new failure |
-| `@pm list` | List all post-mortems |
-| `@pm lessons` | Show lessons learned |
+| `post-mortem log <title> [severity] [--symptoms "..."] [--cause "..."] [--resolution "..."] [--lesson "..."] [--prevention "..."]` | Log a new failure |
+| `post-mortem edit <id> <section> <content>` | Update a section |
+| `post-mortem list` | List all post-mortems |
+| `post-mortem lessons` | Show lessons learned |
+| `post-mortem delete <id>` | Delete a post-mortem |
 
 Severity: `Critical`, `High`, `Medium` (default), `Low`
+Sections: `symptoms`, `cause`, `resolution`, `lesson`, `prevention`
 
 ### Example
 
 ```
-User: @pm log "Migration failed after deploy" High
-AI:   Post-mortem created: PM-2026-05-12-001
+User: post-mortem log "Migration failed after deploy" High \
+      --symptoms "500 error on user table" \
+      --cause "Missing column in migration" \
+      --resolution "Added missing column" \
+      --lesson "Always verify migration locally" \
+      --prevention "Add migration test to CI"
 
-      Please edit docs/post-mortem.md to add:
-      - Symptoms: What went wrong
-      - Root Cause: Why it happened
-      - Resolution: How it was fixed
-      - Prevention: How to avoid next time
+AI:   Post-mortem created: PM-2026-06-18-001
+
+User: post-mortem edit PM-2026-06-18-001 cause "Migration script missing 'avatar' column"
+AI:   Updated PM-2026-06-18-001.cause
+
+User: post-mortem lessons
+AI:   ## PM-2026-06-18-001: Migration failed after deploy
+      ### Lesson Learned
+      Always verify migration locally
+```
+
+---
+
+## Dream
+
+**Skill:** `dream`
+
+Memory consolidation — scan sessions, extract durable knowledge, promote to MEMORY.md.
+
+| Command | Description |
+|---------|-------------|
+| `dream dream` | Run consolidation process |
+| `dream list` | Show consolidated knowledge |
+| `dream search <keyword>` | Search MEMORY.md entries |
+
+### How It Works
+
+1. Scans session-diary.md for completed sessions
+2. Extracts durable knowledge (decisions, patterns, corrections)
+3. Deduplicates against existing MEMORY.md entries
+4. Promotes new knowledge with metadata
+5. Discovers cross-session patterns
+
+### Example
+
+```
+User: dream dream
+AI:   🌙 Dream consolidation...
+      Sessions scanned: 5
+      Durable knowledge: 3 entries
+      ✅ Promoted to MEMORY.md:
+         - Auth pattern: Use JWT with refresh token
+         - User prefers Malay for casual conversation
+         - Never deploy on Friday afternoon
+      📊 Patterns discovered: 1
+         - Peak productivity 10:00-12:00
+```
+
+---
+
+## Goal
+
+**Skill:** `goal`
+
+Goal-driven sessions with stop conditions — prevents premature stops.
+
+| Command | Description |
+|---------|-------------|
+| `goal set <goal> [verification]` | Set session goal |
+| `goal status` | Show goal and progress |
+| `goal check` | Verify if goal met (run verifiers) |
+| `goal stop` | Mark goal as complete |
+| `goal clear` | Clear goal without completing |
+
+### Why Use Goals?
+
+Without goals, agents may stop prematurely when they think they're done. Goals enforce verification.
+
+### Example
+
+```
+User: goal set "All tests passing" "npm test returns 0"
+AI:   🎯 Goal set: All tests passing
+      Verification: npm test returns 0
+
+# ... work happens ...
+
+User: goal check
+AI:   🔍 Verifying: npm test returns 0
+      ❌ FAIL: 3 tests failing
+      📋 Remaining:
+         - Test 1: auth.test.js
+         - Test 2: user.test.js
+
+# ... more work ...
+
+User: goal check
+AI:   🔍 Verifying: npm test returns 0
+      ✅ PASS: All tests green
+      🎉 Goal achieved!
+
+User: goal stop
+AI:   Session complete: All tests passing
 ```
 
 ---
@@ -327,35 +456,48 @@ AI:   Post-mortem created: PM-2026-05-12-001
 
 ### All Commands
 
-| Subagent | Command | Description |
-|----------|---------|-------------|
-| `@observation` | `observe` | Analyse patterns |
+| Skill | Command | Description |
+|-------|---------|-------------|
+| `observation` | `observe` | Analyse patterns |
 | | `profile` | Show behavioural profile |
 | | `suggest` | Get improvement suggestions |
-| `@reminders` | `set <due> <msg>` | Set reminder |
+| | `reset` | Reset behavioural data |
+| `reminders` | `set <due> <msg>` | Set reminder |
 | | `list` | List pending reminders |
 | | `done <id>` | Mark complete |
+| | `edit <id> <due> <msg>` | Edit reminder |
 | | `clear` | Clear completed |
-| `@library` | `save <cat> <name>` | Save knowledge |
+| `library-system` | `save <cat> <name> <content>` | Save knowledge |
 | | `search <keyword>` | Search entries |
 | | `list [category]` | List entries |
 | | `get <cat> <name>` | Read entry |
-| `@lru` | `add [name]` | Track project |
+| | `delete <cat> <name>` | Delete entry |
+| `lru-projects` | `add [name]` | Track project |
 | | `list` | Show projects |
 | | `switch <name>` | Change project |
 | | `remove <name>` | Remove project |
 | | `status` | Project summary |
-| `@forge` | `scan` | Analyse patterns |
+| `forge` | `scan` | Analyse patterns |
 | | `create <name> <desc>` | Generate skill |
 | | `propose` | Show proposals |
 | | `list` | List forged skills |
-| `@plan` | `start <name>` | Begin plan |
+| `work-plan` | `start <name>` | Begin plan |
 | | `next` | Next task |
 | | `done [msg]` | Complete task |
 | | `status` | Progress report |
-| `@pm` | `log <title> [sev]` | Log failure |
+| `post-mortem` | `log <title> [sev] [--flags]` | Log failure |
+| | `edit <id> <section> <content>` | Update section |
 | | `list` | List failures |
 | | `lessons` | Show lessons |
+| | `delete <id>` | Delete entry |
+| `dream` | `dream` | Consolidate memory |
+| | `list` | Show consolidated knowledge |
+| | `search <keyword>` | Search MEMORY.md |
+| `goal` | `set <goal> [verification]` | Set goal |
+| | `status` | Show progress |
+| | `check` | Verify completion |
+| | `stop` | Mark complete |
+| | `clear` | Clear goal |
 
 ---
 
@@ -372,32 +514,41 @@ Session 10: Library has 20+ entries, forge has improvements
 Session 20: Compound intelligence — everything connected
 ```
 
-### Use with CodeXen
-
-MemCore complements CodeXen perfectly:
-
-```
-CodeXen: Build feature, review code, audit, security
-MemCore: Track patterns, save knowledge, set reminders,
-         learn from failures, manage projects
-```
-
 ### Quick Workflow
 
 ```bash
 # Start
-@observation profile
-@reminders list
+observation profile
+reminders list
 
 # Work
-"Build user login"  (via OpenCode or CodeXen)
+Build your app with OpenCode
 
 # Save
-@library save architecture login-flow "Login flow using JWT"
-@pm log "login bug — missing validation" Medium
+library-system save architecture login-flow "Login flow using JWT"
+post-mortem log "login bug — missing validation" Medium
+
+# Consolidate
+dream dream
 
 # End session
-@lru add
+lru-projects add
+```
+
+### Use Goals for Complex Tasks
+
+For tasks with clear completion criteria:
+
+```bash
+# Set goal with verification
+goal set "API endpoint works" "curl -s localhost:8080/health returns 200"
+
+# Work until verified
+# ... code code code ...
+
+# Check
+goal check
+# ✅ PASS → goal stop
 ```
 
 ---
@@ -406,9 +557,11 @@ MemCore: Track patterns, save knowledge, set reminders,
 
 | Version | Date | Changes |
 |---------|------|---------|
-| 0.2.0 | 2026-05-12 | Stripped 12 overlapping skills. 7 unique memory skills only. Memory intelligence layer. |
-| 0.1.0 | - | Initial release with 19 skills (overlap with CodeXen) |
+| 1.2.0 | 2026-06-18 | Added dream skill, goal skill, budgeted-read, checkpoint template, context reconstruction |
+| 1.1.0 | 2026-06-18 | Added plan agent, permission system, session index, knowledge graph, new commands |
+| 1.0.0 | 2026-05-12 | First stable release. Memory intelligence layer — 7 skills, fully standalone. |
+| 0.1.0 | - | Initial release with 19 skills |
 
 ---
 
-_Last updated: 2026-05-12_
+_Last updated: 2026-06-18_

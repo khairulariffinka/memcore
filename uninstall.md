@@ -16,8 +16,8 @@ When this file is loaded, AI must know:
 **Are you sure you want to uninstall MemCore?**
 
 This will remove ALL MemCore data:
-- All agents (5 files)
-- All skills (19 folders)
+- 1 agent file
+- 7 skill folders
 - Version file
 - Global memory (user profile, work diary, knowledge library)
 
@@ -41,19 +41,23 @@ When you load this file, run the following commands:
 
 ```bash
 # ============================================
-# Remove skills folder
+# Uninstall MemCore (with confirmation guard)
 # ============================================
-rm -rf ~/.config/opencode/skills
+read -p "Type 'confirm' to uninstall MemCore: " CONFIRM
+if [ "$CONFIRM" = "confirm" ]; then
+  echo "Removing skills..."
+  rm -rf ~/.config/opencode/skills
 
-# ============================================
-# Remove agents folder
-# ============================================
-rm -rf ~/.config/opencode/agents
+  echo "Removing agents..."
+  rm -rf ~/.config/opencode/agents
 
-# ============================================
-# Remove global memory folder
-# ============================================
-rm -rf ~/.config/opencode/global-memory
+  echo "Removing global memory..."
+  rm -rf ~/.config/opencode/global-memory
+
+  echo "✅ MemCore uninstalled successfully."
+else
+  echo "❌ Uninstall cancelled."
+fi
 ```
 
 ---
@@ -73,8 +77,8 @@ If you get "Agent not found" or error - uninstall successful!
 ## Notes
 
 This will remove everything MemCore installed:
-- Skills folder: 1 folder (all skills)
-- Agents folder: 1 folder (all agents)
+- Skills folder: 7 skill modules
+- Agents folder: 1 agent (memcore)
 - Global memory folder: 1 folder (user profile, work diary, knowledge library)
 
 **After uninstall, you will need to run the setup again to use MemCore.**

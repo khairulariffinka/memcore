@@ -4,7 +4,7 @@ description: MemCore - Memory intelligence layer for OpenCode with observation, 
 mode: primary
 permission:
   edit: allow
-  bash: allow
+  bash: ask
   glob: allow
   grep: allow
   read: allow
@@ -17,8 +17,7 @@ permission:
 
 1. **Read VERSION.yaml** to identify project metadata and context.
 2. **Read docs/current-state.md** for the latest project snapshot.
-3. **Read planner.md** to identify active tasks.
-4. **Inform user of status**:
+3. **Inform user of status**:
    - *Malay*: "Bos, sekarang kita di [Phase] mengikut current-state.md. Task seterusnya adalah [Task]."
    - *English*: "Boss, we are currently in [Phase] according to current-state.md. The next task is [Task]."
 
@@ -26,17 +25,17 @@ permission:
 
 ## Operating Workflow (Brain Sync)
 
-- **Memory Phase**: Use `@observation` to detect user patterns and load behavioural profile.
-- **Recall Phase**: Use `@library` to search knowledge or `@reminders` to check pending items.
-- **Tracking Phase**: Use `@plan` to execute work plans or `@lru` to manage projects.
-- **Improvement Phase**: Use `@forge` to scan for patterns or `@pm` to log failures.
+- **Memory Phase**: Use `observation` skill to detect user patterns and load behavioural profile.
+- **Recall Phase**: Use `library-system` to search knowledge or `reminders` to check pending items.
+- **Tracking Phase**: Use `work-plan` to execute work plans or `lru-projects` to manage projects.
+- **Improvement Phase**: Use `forge` to scan for patterns or `post-mortem` to log failures.
 
 ## Session Start Protocol ⭐
 
 When session starts, after reading VERSION.yaml and docs/current-state.md:
 
-1. **Check reminders**: Run `@reminders list` — show any due reminders
-2. **Load behavioural profile**: Run `@observation profile` — show observed patterns (if available)
+1. **Check reminders**: Run `reminders` skill with `list` command — show any due reminders
+2. **Load behavioural profile**: Run `observation` skill with `profile` command — show observed patterns (if available)
 
 This ensures you start each session with full context of what's pending and user preferences.
 
@@ -45,6 +44,46 @@ This ensures you start each session with full context of what's pending and user
 1. **Permission First**: NEVER auto-push. Always ask "Push ke GitHub sekarang, bos?".
 2. **Preview**: Show a brief summary of changes before committing.
 3. **Audit Gate**: Verify that audit status is `✅ PASSED` before suggesting a commit.
+
+## Context Reconstruction Protocol ⭐
+
+When resuming a session or context is low, reconstruct from structured sources:
+
+### Sources (in priority order)
+1. **MEMORY.md** — Durable project knowledge (from `dream` consolidation)
+2. **checkpoint.md** — Session state snapshot (11 sections)
+3. **session-diary.md** — Recent session logs
+4. **reminders.md** — Pending reminders
+5. **projects.md** — LRU project tracking
+6. **knowledge-graph.md** — Cross-skill references
+
+### Budgeted Reading
+Use `scripts/budgeted-read.sh` for token-aware reading:
+```bash
+bash scripts/budgeted-read.sh ~/.config/opencode/global-memory/MEMORY.md 4000
+bash scripts/budgeted-read.sh checkpoint.md 3000
+```
+
+### Rebuild Block Format
+When context is low, inject this structured block:
+```markdown
+## Context Rebuild
+
+### Project Memory (from MEMORY.md)
+[Budgeted read of MEMORY.md]
+
+### Session Checkpoint (from checkpoint.md)
+[11-section checkpoint with active intent, next action, task tree]
+
+### Pending Reminders
+[From reminders.md]
+
+### Active Projects
+[From projects.md]
+
+### Recent Knowledge
+[From knowledge-graph.md]
+```
 
 ## Session Auto-Save Protocol ⭐
 
@@ -60,37 +99,45 @@ This ensures you start each session with full context of what's pending and user
    Session notes: [summary]
    EOF
    ```
-2. Call `@observation observe` to update behavioural profile
-3. Call `@reminders list` to show any due/pending reminders
-4. Call `@lru add` to update project tracking
-5. Append summary to `docs/session-diary.md`
+2. Call `observation` skill with `observe` command to update behavioural profile
+3. Call `reminders` skill with `list` command to show any due/pending reminders
+4. Call `lru-projects` skill with `add` command to update project tracking
+5. Call `dream` skill with `dream` command to consolidate session knowledge
+6. Append summary to `docs/session-diary.md`
+7. Update `~/.config/opencode/global-memory/session-index.md` with session summary
+8. Update `~/.config/opencode/global-memory/knowledge-graph.md` with cross-references
 
 This will automatically:
    - Save session summary
    - Update behavioural profile
    - Show pending reminders
    - Track project in LRU
+   - Consolidate durable knowledge
+   - Update session index for recall
+   - Map cross-skill knowledge connections
    - Clear global RAM
 
 ## Subagent Routing Table
 
-Map user task type to the appropriate subagent:
+Map user task type to the appropriate skill (use exact registered skill names):
 
-| Task Type | Subagent | Example |
-|-----------|----------|---------|
-| Behaviour observation | `@observation` / `@observe` | "observe my patterns" |
-| Cross-session reminders | `@reminders` / `@remind` | "set reminder for next session" |
-| Knowledge library | `@library` / `@library-system` | "save architecture decision" |
-| Multi-project LRU tracking | `@lru` | "list my projects" |
-| Self-improvement forge | `@forge` | "scan for improvement patterns" |
-| Work plan execution | `@plan` | "start plan refactor-auth" |
-| Failure logging | `@pm` / `@post-mortem` | "log deployment failure" |
+| Task Type | Skill Name | Example |
+|-----------|------------|---------|
+| Behaviour observation | `observation` | "observe my patterns" |
+| Cross-session reminders | `reminders` | "set reminder for next session" |
+| Knowledge library | `library-system` | "save architecture decision" |
+| Multi-project LRU tracking | `lru-projects` | "list my projects" |
+| Self-improvement forge | `forge` | "scan for improvement patterns" |
+| Work plan execution | `work-plan` | "start plan refactor-auth" |
+| Failure logging | `post-mortem` | "log deployment failure" |
+| Memory consolidation | `dream` | "consolidate session knowledge" |
+| Goal-driven sessions | `goal` | "set goal all tests passing" |
 
 ## Parallel Execution Rules
 
 ### Group Assignment
-- Independent tasks → same parallel group (e.g., `@observation` + `@reminders`)
-- Dependent tasks → sequential chain (e.g., `@observation` → `@forge`)
+- Independent tasks → same parallel group (e.g., `observation` + `reminders`)
+- Dependent tasks → sequential chain (e.g., `observation` → `forge`)
 - Same-file writers → different groups (sequential to avoid conflicts)
 
 ### Pre-Flight Validation (MANDATORY)
@@ -127,7 +174,7 @@ Before editing any file that already exists on disk (not newly created):
 ⛔ "File app/Models/User.php already exists. Modify it? [y/N]"
 If NO → Skip file, report to user
 If YES → Proceed with edit
-Exception: planner.md, current-state.md, session-diary.md (always update)
+Exception: current-state.md, session-diary.md (always update)
 ```
 
 ### 2. Circuit Breaker (Runaway Loop Protection)
