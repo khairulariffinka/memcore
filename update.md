@@ -197,44 +197,54 @@ if [ -f ~/.config/opencode/opencode.json ]; then
     else
       echo ""
       echo "⚠️  CONFLICT: opencode.json differs from MemCore version"
-      echo "    [1] Keep mine - skip, don't change (RECOMMENDED)"
-      echo "    [2] Merge - add MemCore settings to mine"
-      echo "    [3] Show diff - see before deciding"
+      echo ""
+      echo "    Your agents/skills files were copied, but NOT registered in opencode.json."
+      echo "    Without merge, OpenCode won't see MemCore agents/skills."
+      echo ""
+      echo "    [1] Merge - add MemCore to mine (RECOMMENDED)"
+      echo "    [2] Show diff - see before deciding"
+      echo "    [3] Skip - I'll manually add later"
       read -p "Choice [1]: " choice
       case "$choice" in
         2)
-          # Merge JSON - MemCore adds new keys, keeps user values
-          if command -v jq >/dev/null 2>&1; then
-            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
-            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-            echo "Merged opencode.json (your settings kept + new MemCore settings added)"
-          else
-            # No jq - fallback to keeping user config
-            echo "jq not found - keeping your config (install jq for merge)"
-          fi
-          ;;
-        3)
           echo "--- Your config ---"
           cat ~/.config/opencode/opencode.json
           echo "--- MemCore config ---"
           cat core/opencode.json
           echo ""
-          read -p "Choose [1=keep mine, 2=merge]: " choice2
+          read -p "Choose [1=merge, 2=skip]: " choice2
           case "$choice2" in
             2)
+              echo "⚠️  Skipped. You must manually add MemCore agents/skills to opencode.json."
+              echo "   See: https://github.com/khairulariffinka/memcore#manual-setup"
+              ;;
+            *)
+              # Merge JSON - MemCore adds new keys, keeps user values
               if command -v jq >/dev/null 2>&1; then
                 jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
                 mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
-                echo "Merged opencode.json"
+                echo "✅ Merged opencode.json (your settings kept + MemCore added)"
               else
-                echo "jq not found - keeping your config"
+                echo "❌ jq not found. Install jq first: apt install jq / brew install jq"
+                echo "   Then re-run: load update.md"
               fi
               ;;
-            *) echo "Keeping your config" ;;
           esac
           ;;
+        3)
+          echo "⚠️  Skipped. You must manually add MemCore agents/skills to opencode.json."
+          echo "   See: https://github.com/khairulariffinka/memcore#manual-setup"
+          ;;
         *)
-          echo "Keeping your config"
+          # Default: Merge
+          if command -v jq >/dev/null 2>&1; then
+            jq -s '.[0] * .[1]' ~/.config/opencode/opencode.json core/opencode.json > ~/.config/opencode/opencode.json.tmp && \
+            mv ~/.config/opencode/opencode.json.tmp ~/.config/opencode/opencode.json && \
+            echo "✅ Merged opencode.json (your settings kept + MemCore added)"
+          else
+            echo "❌ jq not found. Install jq first: apt install jq / brew install jq"
+            echo "   Then re-run: load update.md"
+          fi
           ;;
       esac
     fi
